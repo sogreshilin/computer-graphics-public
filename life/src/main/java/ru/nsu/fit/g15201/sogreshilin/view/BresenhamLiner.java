@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BresenhamLiner {
+class BresenhamLiner {
 
     private Color color = Color.BLACK;
     private int lineThickness = 1;

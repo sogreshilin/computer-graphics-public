@@ -4,7 +4,8 @@ import javax.swing.filechooser.FileFilter;
 import java.io.File;
 
 public class ExtensionFileFilter extends FileFilter {
-    String extension, description;
+    private final String extension;
+    private final String description;
 
     /**
      * Constructs filter

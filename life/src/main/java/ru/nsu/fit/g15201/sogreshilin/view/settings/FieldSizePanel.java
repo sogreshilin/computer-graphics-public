@@ -11,6 +11,8 @@ import java.awt.event.KeyEvent;
 public class FieldSizePanel extends JPanel {
 
     private Config config;
+    private JTextField widthTextField;
+    private JTextField heightTextField;
 
     public FieldSizePanel(Config config) {
         this.config = config;
@@ -19,7 +21,7 @@ public class FieldSizePanel extends JPanel {
 
         JPanel panelWidth = new JPanel(new GridLayout(1, 2));
         panelWidth.add(new JLabel("Width"));
-        JTextField widthTextField = new JTextField(String.valueOf(config.getFieldWidth()));
+        widthTextField = new JTextField(String.valueOf(config.getFieldWidth()));
         panelWidth.add(widthTextField);
         widthTextField.addKeyListener(new KeyAdapter() {
             @Override
@@ -34,10 +36,10 @@ public class FieldSizePanel extends JPanel {
                     if (val <= 0) {
                         throw new NumberFormatException();
                     }
-                    config.setFieldWidth(val);
+                    getConfig().setFieldWidth(val);
                 } catch (NumberFormatException ex) {
                     widthTextField.setForeground(Color.RED);
-                    config.setFieldWidth(-1);
+                    getConfig().setFieldWidth(-1);
                 }
             }
         });
@@ -45,7 +47,7 @@ public class FieldSizePanel extends JPanel {
 
         JPanel panelHeight = new JPanel(new GridLayout(1, 2));
         panelHeight.add(new JLabel("Height"));
-        JTextField heightTextField = new JTextField(String.valueOf(config.getFieldHeight()));
+        heightTextField = new JTextField(String.valueOf(config.getFieldHeight()));
         panelHeight.add(heightTextField);
 
         heightTextField.addKeyListener(new KeyAdapter() {
@@ -61,15 +63,25 @@ public class FieldSizePanel extends JPanel {
                     if (val <= 0) {
                         throw new NumberFormatException();
                     }
-                    config.setFieldHeight(val);
+                    getConfig().setFieldHeight(val);
                 } catch (NumberFormatException ex) {
                     heightTextField.setForeground(Color.RED);
-                    config.setFieldHeight(-1);
+                    getConfig().setFieldHeight(-1);
                 }
             }
         });
 
         add(panelWidth);
         add(panelHeight);
+    }
+
+    public void setConfig(Config config) {
+        this.config = config;
+        widthTextField.setText(String.valueOf(config.getFieldWidth()));
+        heightTextField.setText(String.valueOf(config.getFieldHeight()));
+    }
+
+    public Config getConfig() {
+        return config;
     }
 }

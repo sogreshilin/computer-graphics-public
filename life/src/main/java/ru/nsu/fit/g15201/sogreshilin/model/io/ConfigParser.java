@@ -1,12 +1,9 @@
 package ru.nsu.fit.g15201.sogreshilin.model.io;
 
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import ru.nsu.fit.g15201.sogreshilin.view.Point;
 
@@ -41,7 +38,7 @@ public class ConfigParser {
     public static Config deserialize(InputStream in) throws IOException {
         Config config = new Config();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, charset))) {
-            String rawString = "";
+            String rawString;
             try {
                 rawString = readLineAndRemoveComments(reader);
                 String[] ss = rawString.split(" ");
@@ -90,11 +87,5 @@ public class ConfigParser {
             output.write((point.getX() + " " + point.getY() + "\n").getBytes(charset));
         }
         return output;
-    }
-
-    public static void main(String[] args) throws IOException {
-        InputStream is = new FileInputStream("/Users/Alexander/Documents/comp_graphics/life/FIT_15201_Sogreshilin_Life_Data/unnamed.life");
-        Config config = deserialize(is);
-        System.out.println(config);
     }
 }

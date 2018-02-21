@@ -1,11 +1,11 @@
 package ru.nsu.fit.g15201.sogreshilin.view;
 
-public class Hex {
+class Hex {
     public static final int VERTEX_COUNT = 6;
-    private int x;
-    private int y;
-    private int radius;
-    private Point[] vertexes = new Point[VERTEX_COUNT];
+    private final int x;
+    private final int y;
+    private final int radius;
+    private final Point[] vertexes = new Point[VERTEX_COUNT];
 
 
     public Hex(int x, int y, int radius) {

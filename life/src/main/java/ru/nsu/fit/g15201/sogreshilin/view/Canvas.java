@@ -6,7 +6,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import ru.nsu.fit.g15201.sogreshilin.model.io.Config;
 import ru.nsu.fit.g15201.sogreshilin.model.State;
@@ -28,12 +30,16 @@ public class Canvas extends JPanel {
 
 
     private List<HexagonClickedObserver> observers = new ArrayList<>();
+    private boolean mouseListenersEnabled = true;
 
     public Canvas(Config config) {
         setConfig(config);
         setMouseListeners();
     }
 
+    private int ceilToEven(int number) {
+        return number + (number & 1);
+    }
 
     private void drawText(BufferedImage image, int x, int y, String text) {
         Graphics2D graphics2D = image.createGraphics();
@@ -51,60 +57,72 @@ public class Canvas extends JPanel {
 
     private void setMouseListeners() {
         addMouseListener(new MouseAdapter() {
+            
             @Override
             public void mousePressed(MouseEvent e) {
-                int x = e.getX();
-                int y = e.getY();
-                if (isInsideImage(x, y) && canvas.getRGB(x, y) != Constants.GRID_BORDER_COLOR.getRGB()) {
-                    Point currentHex = getHexByPixel(x, y);
-                    if (currentHex.equals(lastColoredHex)) {
-                        return;
-                    }
-                    lastColoredHex = currentHex;
-                    if (isInField(lastColoredHex)) {
-                        notifyHexagonClicked(lastColoredHex.getX(), lastColoredHex.getY());
-                        repaint();
+                if (mouseListenersEnabled) {
+                    int x = e.getX();
+                    int y = e.getY();
+                    if (isInsideImage(x, y) && canvas.getRGB(x, y) != Constants.GRID_BORDER_COLOR.getRGB()) {
+                        Point currentHex = getHexByPixel(x, y);
+                        if (currentHex.equals(lastColoredHex)) {
+                            return;
+                        }
+                        lastColoredHex = currentHex;
+                        if (isInField(lastColoredHex)) {
+                            notifyHexagonClicked(lastColoredHex.getX(), lastColoredHex.getY());
+                            repaint();
+                        }
                     }
                 }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                lastColoredHex = null;
+                if (mouseListenersEnabled) {
+                    lastColoredHex = null;
+                }
             }
         });
 
         addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                int x = e.getX();
-                int y = e.getY();
-                if (isInsideImage(x, y) && canvas.getRGB(x, y) != Constants.GRID_BORDER_COLOR.getRGB()) {
-                    Point currentHexagon = getHexByPixel(x, y);
-                    if (currentHexagon.equals(lastColoredHex)) {
-                        return;
-                    }
-                    lastColoredHex = currentHexagon;
-                    if (isInField(lastColoredHex)) {
-                        notifyHexagonClicked(lastColoredHex.getX(), lastColoredHex.getY());
-                        repaint();
+                if (mouseListenersEnabled) {
+                    int x = e.getX();
+                    int y = e.getY();
+                    if (isInsideImage(x, y) && canvas.getRGB(x, y) != Constants.GRID_BORDER_COLOR.getRGB()) {
+                        Point currentHexagon = getHexByPixel(x, y);
+                        if (currentHexagon.equals(lastColoredHex)) {
+                            return;
+                        }
+                        lastColoredHex = currentHexagon;
+                        if (isInField(lastColoredHex)) {
+                            notifyHexagonClicked(lastColoredHex.getX(), lastColoredHex.getY());
+                            repaint();
+                        }
                     }
                 }
             }
         });
     }
 
+    private int imageWidth;
+    private int imageHeight;
+
     public void setConfig(Config config) {
         this.config = config;
-        this.hexRadius = 2 * config.getCellSize();
+        this.hexRadius = ceilToEven(config.getCellSize());
         this.hexWidth = 2 * (int) Math.round(hexRadius * Math.sin(Math.PI / 3));
         this.hexHeight = 2 * hexRadius;
 
         this.columnsCount = config.getFieldWidth();
         this.rowsCount = config.getFieldHeight();
 
-        int imageWidth = columnsCount * hexWidth + 1;
-        int imageHeight = (3 * rowsCount + 1) * hexRadius / 2 + 1;
+        this.topMargin = config.getLineThickness() / 2 + 1;
+        this.leftMargin = config.getLineThickness() / 2 + 1;
+        this.imageWidth = columnsCount * hexWidth + 2 * topMargin;
+        this.imageHeight = (3 * rowsCount + 1) * hexRadius / 2 + 2 * topMargin;
 
         this.canvas = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
         this.impacts = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
@@ -160,11 +178,26 @@ public class Canvas extends JPanel {
     public void drawHex(int x, int y, int radius, Color color) {
         Hex hex = new Hex(x, y, radius);
         Point[] vertexes = hex.getVertexes();
-        for (int i = 0; i < Hex.VERTEX_COUNT; ++i) {
-            int j = (i + 1) % Hex.VERTEX_COUNT;
-            drawLine(vertexes[i].getX(), vertexes[i].getY(),
-                    vertexes[j].getX(), vertexes[j].getY());
+        if (liner.getLineThickness() == 1) {
+            for (int i = 0; i < Hex.VERTEX_COUNT; ++i) {
+                int j = (i + 1) % Hex.VERTEX_COUNT;
+                drawLine(vertexes[i].getX(), vertexes[i].getY(),
+                        vertexes[j].getX(), vertexes[j].getY());
+            }
+        } else {
+            BasicStroke bs = new BasicStroke(liner.getLineThickness());
+            Graphics2D graphics2D = canvas.createGraphics();
+            graphics2D.setColor(color);
+            graphics2D.setStroke(bs);
+            int[] xs = new int[6];
+            int[] ys = new int[6];
+            for (int i = 0; i < 6; ++i) {
+                xs[i] = vertexes[i].getX();
+                ys[i] = vertexes[i].getY();
+            }
+            graphics2D.drawPolygon(xs, ys, 6);
         }
+
     }
 
 
@@ -172,19 +205,20 @@ public class Canvas extends JPanel {
         SpanFiller.fill(canvas, x, y, color);
     }
 
+    private int leftMargin;
+    private int topMargin;
 
     public void drawField() {
-        int x = 0;
-        int y = hexRadius;
+        int x;
+        int y = topMargin + hexRadius;
         for (int i = 0; i < rowsCount; ++i) {
-            x = (i % 2 == 0) ? hexWidth / 2 : hexWidth;
+            x = leftMargin + ((i % 2 == 0) ? hexWidth / 2 : hexWidth);
             for (int j = 0; j < (columnsCount - i % 2); ++j) {
                 drawHex(x, y, hexRadius, Constants.GRID_BORDER_COLOR);
                 x += hexWidth;
             }
             y += 3 * hexRadius / 2;
         }
-//        repaint();
     }
 
 
@@ -286,7 +320,7 @@ public class Canvas extends JPanel {
             for (int j = 0; j < (columnsCount - i % 2); ++j) {
                 Point hexCenter = getPixelByHex(i, j);
                 double impact = doubles == null ? 0 : doubles[k];
-                drawText(impacts, hexCenter.getX(), hexCenter.getY(), String.format("%2.1f", impact));
+                drawText(impacts, leftMargin + hexCenter.getX(), topMargin + hexCenter.getY(), String.format("%2.1f", impact));
                 ++k;
             }
         }
@@ -296,5 +330,9 @@ public class Canvas extends JPanel {
     public void clearField() {
         clearImage(canvas);
         drawField();
+    }
+
+    public void setMouseListenersEnabled(boolean b) {
+        this.mouseListenersEnabled = b;
     }
 }

@@ -2,7 +2,6 @@ package ru.nsu.fit.g15201.sogreshilin.model;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 import ru.nsu.fit.g15201.sogreshilin.model.io.Config;
 import ru.nsu.fit.g15201.sogreshilin.view.Point;
@@ -15,7 +14,6 @@ public class GameModel {
     static double FST_IMPACT = 1.0;
     static double SND_IMPACT = 0.3;
 
-    /* 1-ая координата - строка, 2-ая - столбец */
     private Cell[][] cells;
     private int rowsCount;
     private int columnsCount;
@@ -25,15 +23,7 @@ public class GameModel {
     private GameModel(int rowsCount, int columnsCount) {
         this.rowsCount = rowsCount;
         this.columnsCount = columnsCount;
-        this.cells = new Cell[rowsCount][columnsCount];
-        for (int i = 0; i < rowsCount; ++i) {
-            Cell[] line = new Cell[columnsCount - (i & 1)];
-            for (int j = 0; j < columnsCount - (i & 1); ++j) {
-                line[j] = new Cell(State.DEAD);
-            }
-            cells[i] = line;
-        }
-        setNeighboursToAll();
+        initializeMatrix(rowsCount, columnsCount);
     }
 
     public GameModel(Config config) {
@@ -66,7 +56,6 @@ public class GameModel {
     }
 
     public void switchStateAt(int i, int j) {
-//        System.out.println("at func switchStateAt");
         if (!doesFieldContainCellWithCoordinates(j, i)) {
             return;
         }
@@ -83,14 +72,13 @@ public class GameModel {
     public void setStateAt(int i, int j, State state) {
         cells[j][i].setState(state);
         cells[j][i].getAllNeighbours().forEach(Cell::recomputeImpact);
-//        System.out.println(this);
 
         notifyStateChanged(j, i, state);
         notifyImpactChanged();
-//        System.out.println(String.format("Model changed state of hex(%d, %d)", j, i));
     }
 
     public void nextGeneration() {
+        recomputeAllImpacts();
         for (int i = 0; i < rowsCount; ++i) {
             for (int j = 0; j < columnsCount - (i & 1); ++j) {
                 cells[i][j].nextGeneration();
@@ -170,18 +158,17 @@ public class GameModel {
         return result.toString();
     }
 
+    private static final int CLOCK = 1000;
+
     private Timer timer;
     public void startTimer() {
         timer = new Timer();
-        long delay  = 1000L;
-        long period = 1000L;
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                System.out.println(GameModel.this);
                 nextGeneration();
             }
-        }, delay, period);
+        }, CLOCK, CLOCK);
     }
 
     public void stopTimer() {
@@ -242,43 +229,38 @@ public class GameModel {
         return impacts;
     }
 
-    public void setConfig(Config newConfig) {
-        if (config.getFieldWidth() != newConfig.getFieldWidth() ||
-                config.getFieldHeight() != newConfig.getFieldHeight()) {
-//            System.out.println("HERE");
-            int oldRowsCount = rowsCount;
-            int oldColumnsCount = columnsCount;
-            rowsCount = newConfig.getFieldHeight();
-            columnsCount = newConfig.getFieldWidth();
-            Cell[][] oldCells = cells;
-            Cell[][] newCells = new Cell[rowsCount][columnsCount];
-            for (int i = 0; i < rowsCount; ++i) {
-                Cell[] line = new Cell[columnsCount - (i & 1)];
-                for (int j = 0; j < columnsCount - (i & 1); ++j) {
-                    line[j] = new Cell(State.DEAD);
-                }
-                newCells[i] = line;
+    private void initializeMatrix(int rowsCount, int columnsCount) {
+        cells = new Cell[rowsCount][columnsCount];
+        for (int i = 0; i < rowsCount; ++i) {
+            for (int j = 0; j < columnsCount - (i & 1); ++j) {
+                cells[i][j]  = new Cell(State.DEAD);
             }
-            cells = newCells;
-            setNeighboursToAll();
-//            System.out.println("MODEL:\n" + this);
-
-//            for (int i = 0; i < rowsCount; ++i) {
-//                for (int j = 0; j < columnsCount - (i & 1); ++j) {
-////                    if (i < oldRowsCount && j < oldColumnsCount) {
-////                        setStateAt(j, i, oldCells[i][j].getState());
-////                    } else {
-//                        setStateAt(i, j, State.DEAD);
-////                    }
-//                }
-//            }
-            recomputeAllImpacts();
-            notifyImpactChanged();
         }
-        if (rulesChanged(config, newConfig)) {
-            config = newConfig;
+        setNeighboursToAll();
+    }
+
+    public void setConfig(Config newConfig) {
+        this.config = newConfig;
+        rowsCount = newConfig.getFieldHeight();
+        columnsCount = newConfig.getFieldWidth();
+        initializeMatrix(rowsCount, columnsCount);
+        for (Point alive : config.getAliveCells()) {
+            if (doesFieldContainCellWithCoordinates(alive.getX(), alive.getY())) {
+                setStateAt(alive.getY(), alive.getX(), State.ALIVE);
+            }
         }
     }
 
 
+    public ArrayList<Point> getAliveCells() {
+        ArrayList<Point> aliveCells = new ArrayList<>();
+        for (int i = 0; i < rowsCount; ++i) {
+            for (int j = 0; j < columnsCount - (i & 1); ++j) {
+                if (cells[i][j].getState() == State.ALIVE) {
+                    aliveCells.add(new Point(i, j));
+                }
+            }
+        }
+        return aliveCells;
+    }
 }

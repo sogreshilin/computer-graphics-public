@@ -14,18 +14,13 @@ public class ParametersForm extends JFrame {
 
     private Config oldConfig;
     private Config newConfig;
+    private GameModePanel gameModePanel;
+    private FieldSizePanel fieldSizePanel;
+    private CellPropertiesPanel cellPropertiesPanel;
+    private GameRulesPanel gameRulesPanel;
 
     private ArrayList<ConfigChangedObserver> observers = new ArrayList<>();
-
-    private static void center(Component wind, Rectangle rect) {
-        Dimension windSize = wind.getSize();
-        int x = ((rect.width - windSize.width) / 2) + rect.x;
-        int y = ((rect.height - windSize.height) / 2) + rect.y;
-        if (y < rect.y) {
-            y = rect.y;
-        }
-        wind.setLocation(x, y);
-    }
+    private Config config;
 
     public ParametersForm(JFrame parent, Config config) throws HeadlessException {
         super("Parameters");
@@ -37,14 +32,17 @@ public class ParametersForm extends JFrame {
         JPanel southPanel = new JPanel(new BorderLayout());
         JPanel northPanel = new JPanel(new GridLayout(1, 2));
 
-        northPanel.add(new GameModePanel(newConfig));
-        northPanel.add(new FieldSizePanel(newConfig));
+        gameModePanel = new GameModePanel(newConfig);
+        fieldSizePanel = new FieldSizePanel(newConfig);
+        cellPropertiesPanel = new CellPropertiesPanel(newConfig);
+        gameRulesPanel = new GameRulesPanel(newConfig);
+
+        northPanel.add(gameModePanel);
+        northPanel.add(fieldSizePanel);
         mainPanel.add(northPanel, BorderLayout.NORTH);
-        mainPanel.add(new CellPropertiesPanel(newConfig), BorderLayout.CENTER);
+        mainPanel.add(cellPropertiesPanel, BorderLayout.CENTER);
         mainPanel.add(southPanel, BorderLayout.SOUTH);
-
-
-        southPanel.add(new GameRulesPanel(newConfig), BorderLayout.CENTER);
+        southPanel.add(gameRulesPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
         JButton okButton = new JButton("OK");
@@ -115,6 +113,15 @@ public class ParametersForm extends JFrame {
 
     public void dispose() {
         super.dispose();
+    }
+
+    public void setConfig(Config config) {
+        this.config = config;
+        this.newConfig = new Config(config);
+        gameModePanel.setConfig(newConfig);
+        fieldSizePanel.setConfig(newConfig);
+        cellPropertiesPanel.setConfig(newConfig);
+        gameRulesPanel.setConfig(newConfig);
     }
 
     public interface ConfigChangedObserver {

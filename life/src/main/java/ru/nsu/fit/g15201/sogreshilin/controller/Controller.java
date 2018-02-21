@@ -9,10 +9,14 @@ import ru.nsu.fit.g15201.sogreshilin.model.io.ConfigParser;
 import ru.nsu.fit.g15201.sogreshilin.view.Canvas;
 import ru.nsu.fit.g15201.sogreshilin.view.FileUtils;
 import ru.nsu.fit.g15201.sogreshilin.view.settings.ParametersForm;
+import ru.nsu.fit.g15201.sogreshilin.view.toolbar.MenuToolbarManager;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
-import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
@@ -22,21 +26,19 @@ public class Controller extends MainFrame {
     private static final int MIN_HEIGHT = 600;
     private static final String EXTENSION = "life";
     private static final String FILE_DESCRIPTION = "Text file";
-
     private static final String TITLE = "Game of Life";
-
-    private static final String aboutTxt =
+    private static final String ABOUT =
             TITLE + ", version 1.0\n" +
             "Copyright 2018 Sogreshilin Alexander, FIT-15201";
+    private static final int SAVED_SUCCESSFULLY = 0;
+    private static final int SAVE_CANCELLED = 1;
 
     private Config config;
     private GameModel gameModel;
     private Canvas gameField;
     private JScrollPane scrollPane;
-    private JButton replaceButton;
-    private JButton xorButton;
-    private JButton runButton;
-    private JButton pauseButton;
+    private MenuToolbarManager manager;
+    private ParametersForm parameters;
 
     public Controller(Config config) {
         super(MIN_WIDTH, MIN_HEIGHT, TITLE);
@@ -45,18 +47,40 @@ public class Controller extends MainFrame {
         this.config = config;
         this.gameModel = new GameModel(config);
         this.gameField = new Canvas(config);
+        setupGameViewObservers();
+        setupGameModelObservers();
+        setCurrentFile(null);
 
-        this.scrollPane = new JScrollPane(gameField);
-        add(scrollPane);
+        scrollPane = new JScrollPane(gameField);
+        add(scrollPane, BorderLayout.CENTER);
 
-        gameField.addObserver((i, j) -> {
-            switch (getMode()) {
-                case REPLACE: gameModel.setStateAt(i, j, State.ALIVE); break;
-                case XOR: gameModel.switchStateAt(i, j); break;
-                default: throw new RuntimeException("Unexpected case");
-            }
-        });
+        setupToolbarMenuManager();
+        setupStatusBar();
 
+        this.parameters = new ParametersForm(this, config);
+        parameters.addConfigChangedObserver(this::setConfig);
+    }
+
+    private void setupToolbarMenuManager() {
+        manager = new MenuToolbarManager(this);
+        manager.setupMenu();
+        manager.setupToolbar();
+        manager.setReplaceEnabled(false);
+        manager.setPauseEnabled(false);
+    }
+
+    private void setupStatusBar() {
+        JPanel statusBar = new JPanel(new GridLayout());
+        statusBar.setPreferredSize(new Dimension(this.getWidth(), 20));
+        add(statusBar, BorderLayout.SOUTH);
+        JLabel statusLabel = new JLabel(TITLE);
+        statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        statusLabel.setBorder(BorderFactory.createEmptyBorder());
+        statusBar.add(statusLabel);
+        manager.setStatusLabelListeners(statusLabel);
+    }
+
+    private void setupGameModelObservers() {
         gameModel.addCellStateObserver(new CellStateChangedObserver() {
             @Override
             public void onCellStateChanged(int i, int j, State newState) {
@@ -68,6 +92,7 @@ public class Controller extends MainFrame {
                 gameField.clearField();
             }
         });
+
         gameModel.addCellsImpactObserver(new CellsImpactChangedObserver() {
             @Override
             public void onImpactChanged(double[] impacts) {
@@ -80,103 +105,37 @@ public class Controller extends MainFrame {
                 gameField.drawImpacts(null);
             }
         });
+    }
 
-
-        setUpMenu();
-        setUpToolbar();
+    private void setupGameViewObservers() {
+        gameField.addObserver((i, j) -> {
+            switch (getMode()) {
+                case REPLACE: gameModel.setStateAt(i, j, State.ALIVE); break;
+                case XOR: gameModel.switchStateAt(i, j); break;
+                default: throw new RuntimeException("Unexpected case");
+            }
+        });
     }
 
     private Config.FillMode getMode() {
         return config.getMode();
     }
 
-    private void setUpToolbar() {
-        try {
-            addToolBarButton("File/New");
-            addToolBarButton("File/Open");
-            addToolBarButton("File/Save");
-            addToolBarButton("File/Save as");
-            addToolBarButton("File/Exit");
-            addToolBarSeparator();
-            xorButton = addToolBarButton("Edit/XOR");
-            replaceButton = addToolBarButton("Edit/Replace");
-            xorButton.setEnabled(config.getMode() != Config.FillMode.XOR);
-            replaceButton.setEnabled(config.getMode() != Config.FillMode.REPLACE);
-            addToolBarButton("Edit/Clear");
-            addToolBarButton("Edit/Settings");
-            addToolBarSeparator();
-            addToolBarButton("View/Impacts");
-            addToolBarSeparator();
-            runButton = addToolBarButton("Simulation/Run");
-            pauseButton = addToolBarButton("Simulation/Pause");
-            pauseButton.setEnabled(false);
-            addToolBarButton("Simulation/Step");
-            addToolBarSeparator();
-            addToolBarButton("Help/About...");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void setUpMenu() {
-        try {
-            addSubMenu("File", KeyEvent.VK_F);
-            addMenuItem("File/New", "Start new game", KeyEvent.VK_N, "new.png", "onNew");
-            addMenuItem("File/Open", "Open saved game", KeyEvent.VK_O, "open.png", "onOpen");
-            addMenuItem("File/Save", "Save the game", KeyEvent.VK_S, "save.png", "onSave");
-            addMenuItem("File/Save as", "Save the game as", KeyEvent.VK_S, "saveas.png", "onSave");
-            addMenuItem("File/Exit", "Exit application", KeyEvent.VK_X, "exit.png", "onExit");
-
-            addSubMenu("Edit", KeyEvent.VK_H);
-            addMenuItem("Edit/XOR", "XOR mode", KeyEvent.VK_X, "xor.png", "onXor");
-            addMenuItem("Edit/Replace", "Replace mode", KeyEvent.VK_R, "replace.png", "onReplace");
-            addMenuItem("Edit/Clear", "Clear the field", KeyEvent.VK_C, "clear.png", "onClear");
-            addMenuItem("Edit/Settings", "Open parameters", KeyEvent.VK_P, "settings.png", "onSettings");
-
-            addSubMenu("View", KeyEvent.VK_H);
-            addMenuItem("View/Impacts", "Shows impact of each cell", KeyEvent.VK_C, "impact.png", "onShowImpact");
-
-            addSubMenu("Simulation", KeyEvent.VK_H);
-            addMenuItem("Simulation/Run", "Run the game", KeyEvent.VK_R, "run.png", "onRun");
-            addMenuItem("Simulation/Pause", "Make one step", KeyEvent.VK_S, "pause.png", "onPause");
-            addMenuItem("Simulation/Step", "Make one step", KeyEvent.VK_S, "step.png", "onStep");
-
-            addSubMenu("Help", KeyEvent.VK_H);
-            addMenuItem("Help/About...", "Show program version and copyright information", KeyEvent.VK_A, "about.png", "onAbout");
-        } catch(Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public void setConfig(Config newConfig) {
-        /* Field needs to be redrawn */
-        if (config.getFieldWidth() != newConfig.getFieldWidth() ||
-                config.getFieldHeight() != newConfig.getFieldHeight() ||
-                config.getLineThickness() != newConfig.getLineThickness() ||
-                config.getCellSize() != newConfig.getCellSize()) {
-            gameField.setConfig(newConfig);
-            scrollPane.updateUI();
-        }
-
-        /* Just a change in a model */
-        if (config.getFieldWidth() != newConfig.getFieldWidth() ||
-                config.getFieldHeight() != newConfig.getFieldHeight() ||
-                GameModel.rulesChanged(config, newConfig)) {
-            gameModel.setConfig(newConfig);
-        }
-
-        /* Change toolbar */
-        if (config.getMode() != newConfig.getMode()) {
-            xorButton.setEnabled(newConfig.getMode() != Config.FillMode.XOR);
-            replaceButton.setEnabled(newConfig.getMode() != Config.FillMode.REPLACE);
-        }
-
+        gameField.setConfig(newConfig);
+        scrollPane.updateUI();
+        gameModel.setConfig(newConfig);
         this.config = newConfig;
+        manager.setReplaceEnabled(config.getMode() != Config.FillMode.REPLACE);
+        manager.setXOREnabled(config.getMode() != Config.FillMode.XOR);
+        if (gameField.showsImpacts()) {
+            gameField.drawImpacts(gameModel.getImpacts());
+        }
     }
 
     public void onAbout() {
         JOptionPane.showMessageDialog(this,
-                aboutTxt,
+                ABOUT,
                 "About " + TITLE,
                 JOptionPane.INFORMATION_MESSAGE);
     }
@@ -184,7 +143,12 @@ public class Controller extends MainFrame {
     public void onExit() {
         int optionChosen = showSaveOptionDialog();
         switch (optionChosen) {
-            case JOptionPane.YES_OPTION: onSave(); break;
+            case JOptionPane.YES_OPTION:
+                int result = onSave();
+                if (result == SAVE_CANCELLED) {
+                    return;
+                }
+                break;
             case JOptionPane.NO_OPTION: break;
             case JOptionPane.CANCEL_OPTION:
             case JOptionPane.CLOSED_OPTION: return;
@@ -196,28 +160,54 @@ public class Controller extends MainFrame {
     public void onNew() {
         int optionChosen = showSaveOptionDialog();
         switch (optionChosen) {
-            case JOptionPane.YES_OPTION: onSave(); break;
+            case JOptionPane.YES_OPTION:
+                int result = onSave();
+                if (result == SAVE_CANCELLED) {
+                    return;
+                }
+                break;
             case JOptionPane.NO_OPTION: break;
             case JOptionPane.CANCEL_OPTION:
             case JOptionPane.CLOSED_OPTION: return;
             default: throw new RuntimeException("Unexpected option chosen");
         }
+        setCurrentFile(null);
+        config = new Config();
+        onClear();
         onSettings();
     }
 
     public void onOpen() {
         File file = FileUtils.getOpenFileName(this, EXTENSION, FILE_DESCRIPTION);
-        if (file != null) {
-            try (FileInputStream in = new FileInputStream(file)){
-                Config newConfig = ConfigParser.deserialize(in);
-                setConfig(newConfig);
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(this,
-                        "Invalid file format.\nFile cannot be read",
-                        "Invalid file format",
-                        JOptionPane.ERROR_MESSAGE);
-            }
+        setCurrentFile(file);
+        if (file == null) {
+            return;
         }
+
+        int optionChosen = showSaveOptionDialog();
+        switch (optionChosen) {
+            case JOptionPane.YES_OPTION:
+                int result = onSave();
+                if (result == SAVE_CANCELLED) {
+                    return;
+                }
+                break;
+            case JOptionPane.NO_OPTION: break;
+            case JOptionPane.CANCEL_OPTION:
+            case JOptionPane.CLOSED_OPTION: return;
+            default: throw new RuntimeException("Unexpected option chosen");
+        }
+
+        try (FileInputStream in = new FileInputStream(currentFile)){
+            Config newConfig = ConfigParser.deserialize(in);
+            setConfig(newConfig);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Invalid file format.\nFile cannot be read",
+                    "Invalid file format",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
     }
 
     public int showSaveOptionDialog() {
@@ -232,12 +222,25 @@ public class Controller extends MainFrame {
                 );
     }
 
-    public void onSave() {
-        File file = FileUtils.getSaveFileName(this, EXTENSION, FILE_DESCRIPTION);
-        if (file != null) {
-            try (FileOutputStream out = new FileOutputStream(file)){
+    private File currentFile = null;
+
+    public void setCurrentFile(File currentFile) {
+        this.currentFile = currentFile;
+        String filename = currentFile != null ? currentFile.getName() : "Unsaved";
+        setTitle(filename + " - " + TITLE);
+    }
+
+    public int onSave() {
+        if (currentFile == null) {
+            File file = FileUtils.getSaveFileName(this, EXTENSION, FILE_DESCRIPTION);
+            setCurrentFile(file);
+        }
+        if (currentFile != null) {
+            try (FileOutputStream out = new FileOutputStream(currentFile)){
+                config.setAliveCells(gameModel.getAliveCells());
                 ByteArrayOutputStream baos = ConfigParser.serialize(config);
                 baos.writeTo(out);
+                return SAVED_SUCCESSFULLY;
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(this,
                         "File cannot be saved",
@@ -245,41 +248,53 @@ public class Controller extends MainFrame {
                         JOptionPane.ERROR_MESSAGE);
             }
         }
+        return SAVE_CANCELLED;
+    }
+
+    public void onSaveAs() {
+        File file = FileUtils.getSaveFileName(this, EXTENSION, FILE_DESCRIPTION);
+        if (file != null) {
+            setCurrentFile(file);
+            onSave();
+        }
     }
 
     public void onXor() {
         config.setMode(Config.FillMode.XOR);
-        xorButton.setEnabled(false);
-        replaceButton.setEnabled(true);
+        manager.setXOREnabled(false);
+        manager.setReplaceEnabled(true);
     }
 
     public void onReplace() {
         config.setMode(Config.FillMode.REPLACE);
-        replaceButton.setEnabled(false);
-        xorButton.setEnabled(true);
+        manager.setXOREnabled(true);
+        manager.setReplaceEnabled(false);
     }
 
     public void onClear() {
         gameModel.clearCells();
     }
 
-
     public void onSettings() {
-        ParametersForm parameters = new ParametersForm(this, config);
-        parameters.addConfigChangedObserver(newConfig -> setConfig(newConfig));
+        config.setAliveCells(gameModel.getAliveCells());
+        parameters.setConfig(config);
         parameters.setVisible(true);
     }
 
     public void onRun() {
+        gameField.setMouseListenersEnabled(false);
         gameModel.startTimer();
-        runButton.setEnabled(false);
-        pauseButton.setEnabled(true);
+        manager.setRunEnabled(false);
+        manager.setPauseEnabled(true);
+        manager.setConstructingModeEnabled(false);
     }
 
     public void onPause() {
+        gameField.setMouseListenersEnabled(true);
         gameModel.stopTimer();
-        runButton.setEnabled(true);
-        pauseButton.setEnabled(false);
+        manager.setRunEnabled(true);
+        manager.setPauseEnabled(false);
+        manager.setConstructingModeEnabled(true);
     }
 
     public void onStep() {
@@ -288,20 +303,20 @@ public class Controller extends MainFrame {
 
     public void onShowImpact() {
         gameField.switchShowImpacts();
-        gameField.clearImpacts();
         if (gameField.showsImpacts()) {
             gameField.drawImpacts(gameModel.getImpacts());
+        } else {
+            gameField.clearImpacts();
         }
     }
 
     public static void main(String[] args) {
         Config config = new Config();
         Controller controller = new Controller(config);
-        controller.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        controller.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         controller.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                super.windowClosing(e);
                 controller.onExit();
             }
         });

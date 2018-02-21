@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SpanFiller {
+class SpanFiller {
 
     private static class Span {
-        BufferedImage image;
-        int x0;
-        int x1;
-        int y;
+        final BufferedImage image;
+        final int x0;
+        final int x1;
+        final int y;
 
         Span(BufferedImage image, int x0, int x1, int y) {
             this.image = image;

@@ -7,7 +7,7 @@ public class Config {
     public static final int MIN_THICKNESS = 1;
     public static final int MAX_THICKNESS = 10;
     public static final int MIN_SIZE  = 1;
-    public static final int MAX_SIZE  = 20;
+    public static final int MAX_SIZE  = 40;
 
     private double liveBegin = 2.0;
     private double liveEnd = 3.3;
@@ -16,11 +16,12 @@ public class Config {
     private double firstImpact = 1.0;
     private double secondImpact = 0.3;
 
-    private int fieldWidth = 30;
-    private int fieldHeight = 20;
+    private int fieldWidth = 40;
+    private int fieldHeight = 60;
 
     private int lineThickness = 1;
     private int cellSize = 10;
+    private ArrayList<Point> aliveCells = new ArrayList<Point>();
     private FillMode mode = FillMode.REPLACE;
 
     public enum FillMode { XOR, REPLACE }
@@ -40,9 +41,9 @@ public class Config {
         this.lineThickness = other.lineThickness;
         this.cellSize = other.cellSize;
         this.mode = other.mode;
+        this.aliveCells = other.aliveCells;
     }
 
-    private ArrayList<Point> aliveCells = new ArrayList<Point>();
 
     public int getFieldWidth() {
         return fieldWidth;

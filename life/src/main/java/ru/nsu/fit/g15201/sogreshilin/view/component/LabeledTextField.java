@@ -9,6 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LabeledTextField extends JPanel {
+    private double value;
+
+    public void setValue(double value) {
+        this.value = value;
+    }
+
     public enum Orientation {H, V}
 
     private JLabel label;

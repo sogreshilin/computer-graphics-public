@@ -22,7 +22,6 @@ public class Cell {
 
     public void setState(State state) {
         this.state = state;
-//        getAllNeighbours().forEach(Cell::recomputeImpact);
     }
 
     public void setFirstNeighbours(List<Cell> firstNeighbours) {
@@ -54,7 +53,7 @@ public class Cell {
                 }
                 break;
             case ALIVE:
-                if (impact < GameModel.LIVE_BEGIN || impact > GameModel.BIRTH_END) {
+                if (impact < GameModel.LIVE_BEGIN || impact > GameModel.LIVE_END) {
                     setState(State.DEAD);
                 }
                 break;

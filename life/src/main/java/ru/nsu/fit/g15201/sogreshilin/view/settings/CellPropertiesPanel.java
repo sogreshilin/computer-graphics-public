@@ -11,8 +11,10 @@ public class CellPropertiesPanel extends JPanel {
     private static final int SPACING = 1;
     private LabeledSliderWithTextField lineThickness;
     private LabeledSliderWithTextField cellSize;
+    private Config config;
 
     public CellPropertiesPanel(Config config) {
+        this.config = config;
         setBorder(new TitledBorder("Cell properties"));
         setLayout(new GridLayout(2, 1));
 
@@ -22,10 +24,24 @@ public class CellPropertiesPanel extends JPanel {
         lineThickness.setValue(config.getLineThickness());
         cellSize.setValue(config.getCellSize());
 
-        lineThickness.addValueChangedObserver(config::setLineThickness);
-        cellSize.addValueChangedObserver(config::setCellSize);
+        lineThickness.addValueChangedObserver(this::setLineThickness);
+        cellSize.addValueChangedObserver(this::setCellSize);
 
         add(lineThickness);
         add(cellSize);
+    }
+
+    public void setConfig(Config config) {
+        this.config = config;
+        lineThickness.setValue(config.getLineThickness());
+        cellSize.setValue(config.getCellSize());
+    }
+
+    private void setLineThickness(int thickness) {
+        config.setLineThickness(thickness);
+    }
+
+    private void setCellSize(int cellSize) {
+        config.setCellSize(cellSize);
     }
 }

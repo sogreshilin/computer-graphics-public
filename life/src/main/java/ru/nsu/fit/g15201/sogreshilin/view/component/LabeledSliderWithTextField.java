@@ -1,6 +1,8 @@
 package ru.nsu.fit.g15201.sogreshilin.view.component;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -23,29 +25,16 @@ public class LabeledSliderWithTextField extends JPanel {
         this.label = new JLabel(label);
         this.label.setPreferredSize(new Dimension(200, 20));
         slider = new JSlider(min, max);
-//        slider.setMajorTickSpacing(spacing);
-//        slider.setPaintTicks(true);
         slider.setSnapToTicks(true);
         slider.setFocusable(false);
         textField = new JTextField(5);
-
-//        constraints.fill = GridBagConstraints.HORIZONTAL;
-//        constraints.gridx = 0;
-//        constraints.gridy = 0;
-//        constraints.weightx = 0.25;
         add(this.label, constraints);
-//        constraints.gridx = 1;
-//        constraints.gridwidth = 3;
-//        constraints.weightx = 0.75;
         add(slider, constraints);
-//        constraints.gridx = 4;
-//        constraints.weightx = 0.25;
         add(textField, constraints);
 
-//        setBorder(new EtchedBorder());
-
-        slider.addMouseListener(new MouseAdapter() {
-            public void mouseReleased(MouseEvent e) {
+        slider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
                 int value = slider.getValue();
                 notifyValueChanged(value);
                 textField.setText(String.valueOf(value));

@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
-import java.nio.file.Paths;
+import java.util.Objects;
 
 public class FileUtils {
     private static File dataDirectory = new File("./FIT_15201_Sogreshilin_Life_Data");
@@ -17,7 +17,7 @@ public class FileUtils {
      * Returns File pointing to Data directory of current project. If Data directory is not found, returns project directory.
      * @return File object.
      */
-    public static File getDataDirectory() {
+    private static File getDataDirectory() {
         if(dataDirectory == null) {
             try {
                 String path = URLDecoder.decode(MainFrame.class.getProtectionDomain().getCodeSource().getLocation().getFile(), Charset.defaultCharset().toString());
@@ -26,7 +26,7 @@ public class FileUtils {
                 dataDirectory = new File(".");
             }
             if(dataDirectory == null || !dataDirectory.exists()) dataDirectory = new File(".");
-            for(File f: dataDirectory.listFiles()) {
+            for(File f: Objects.requireNonNull(dataDirectory.listFiles())) {
                 if(f.isDirectory() && f.getName().endsWith("_Data")) {
                     dataDirectory = f;
                     break;
