@@ -1,21 +1,46 @@
-package ru.nsu.fit.g15201.sogreshilin;
-
-import ru.nsu.fit.g15201.sogreshilin.Point;
+package ru.nsu.fit.g15201.sogreshilin.view;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Bresenham {
+public class BresenhamLiner {
 
-    public static void drawLine(BufferedImage image, int x0, int y0, int x1, int y1, Color color) {
+    private Color color = Color.BLACK;
+    private int lineThickness = 1;
+
+    public BresenhamLiner() {
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public int getLineThickness() {
+        return lineThickness;
+    }
+
+    public void setLineThickness(int lineThickness) {
+        this.lineThickness = lineThickness;
+    }
+
+    public void drawLine(BufferedImage image, int x0, int y0, int x1, int y1) {
+        if (x1 - x0 < 0) {
+            int tmp;
+            tmp = x0; x0 = x1; x1 = tmp;
+            tmp = y0; y0 = y1; y1 = tmp;
+        }
         for (Point pixel : getLinePixels(x0, y0, x1, y1)) {
             image.setRGB(pixel.getX(), pixel.getY(), color.getRGB());
         }
     }
 
-    public static List<Point> getLinePixels(int x0, int y0, int x1, int y1) {
+    private List<Point> getLinePixels(int x0, int y0, int x1, int y1) {
         List<Point> pixels = new ArrayList<>();
         int deltax = x1 - x0;
         int deltay = y1 - y0;

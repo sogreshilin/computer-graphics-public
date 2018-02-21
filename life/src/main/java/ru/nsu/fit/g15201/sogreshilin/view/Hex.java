@@ -1,4 +1,4 @@
-package ru.nsu.fit.g15201.sogreshilin;
+package ru.nsu.fit.g15201.sogreshilin.view;
 
 public class Hex {
     public static final int VERTEX_COUNT = 6;

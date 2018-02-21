@@ -1,4 +1,4 @@
-package ru.nsu.fit.g15201.sogreshilin;
+package ru.nsu.fit.g15201.sogreshilin.view;
 
 
 import java.awt.Color;
