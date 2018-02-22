@@ -1,0 +1,31 @@
+// field width, field height
+40 30
+
+// border thickness
+1
+
+// cell size
+18
+
+// number of alive cells
+18
+
+// alive cells: x y
+10 13
+10 14
+10 15
+10 22
+10 23
+10 24
+11 13
+11 14
+11 22
+11 23
+12 14
+12 23
+15 18
+16 18
+16 19
+17 17
+17 18
+17 19
