@@ -128,8 +128,6 @@ public class Controller extends MainFrame {
     }
 
     public void setConfig(Config newConfig) {
-        System.out.println(newConfig);
-        System.out.println(config);
         gameField.setConfig(newConfig);
         scrollPane.updateUI();
         gameModel.setConfig(newConfig);
