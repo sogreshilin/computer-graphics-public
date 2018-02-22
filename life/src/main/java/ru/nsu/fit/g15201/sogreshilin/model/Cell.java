@@ -61,17 +61,6 @@ public class Cell {
         }
     }
 
-    public void recomputeImpact() {
-        long aliveFirstNeighbours = firstNeighbours.stream()
-                .filter(cell -> cell.getState() == State.ALIVE)
-                .count();
-        long aliveSecondNeighbours = secondNeighbours.stream()
-                .filter(cell -> cell.getState() == State.ALIVE)
-                .count();
-        impact = aliveFirstNeighbours * GameModel.FST_IMPACT +
-                 aliveSecondNeighbours * GameModel.SND_IMPACT;
-    }
-
     public double getImpact() {
         return impact;
     }
@@ -79,5 +68,9 @@ public class Cell {
     public void clear() {
         state = State.DEAD;
         impact = 0;
+    }
+
+    public void setImpact(double impact) {
+        this.impact = impact;
     }
 }

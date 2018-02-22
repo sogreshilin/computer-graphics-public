@@ -13,6 +13,7 @@ import ru.nsu.fit.g15201.sogreshilin.view.toolbar.MenuToolbarManager;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -29,7 +30,7 @@ public class Controller extends MainFrame {
     private static final String TITLE = "Game of Life";
     private static final String ABOUT =
             TITLE + ", version 1.0\n" +
-            "Copyright 2018 Sogreshilin Alexander, FIT-15201";
+                    "Copyright 2018 Sogreshilin Alexander, FIT-15201";
     private static final int SAVED_SUCCESSFULLY = 0;
     private static final int SAVE_CANCELLED = 1;
 
@@ -75,7 +76,7 @@ public class Controller extends MainFrame {
         add(statusBar, BorderLayout.SOUTH);
         JLabel statusLabel = new JLabel(TITLE);
         statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        statusLabel.setBorder(BorderFactory.createEmptyBorder());
+        statusLabel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
         statusBar.add(statusLabel);
         manager.setStatusLabelListeners(statusLabel);
     }
@@ -84,7 +85,7 @@ public class Controller extends MainFrame {
         gameModel.addCellStateObserver(new CellStateChangedObserver() {
             @Override
             public void onCellStateChanged(int i, int j, State newState) {
-                gameField.fillHexagon(i ,j ,newState);
+                gameField.fillHexagon(i, j, newState);
             }
 
             @Override
@@ -110,9 +111,14 @@ public class Controller extends MainFrame {
     private void setupGameViewObservers() {
         gameField.addObserver((i, j) -> {
             switch (getMode()) {
-                case REPLACE: gameModel.setStateAt(i, j, State.ALIVE); break;
-                case XOR: gameModel.switchStateAt(i, j); break;
-                default: throw new RuntimeException("Unexpected case");
+                case REPLACE:
+                    gameModel.setStateAt(i, j, State.ALIVE);
+                    break;
+                case XOR:
+                    gameModel.switchStateAt(i, j);
+                    break;
+                default:
+                    throw new RuntimeException("Unexpected case");
             }
         });
     }
@@ -122,6 +128,8 @@ public class Controller extends MainFrame {
     }
 
     public void setConfig(Config newConfig) {
+        System.out.println(newConfig);
+        System.out.println(config);
         gameField.setConfig(newConfig);
         scrollPane.updateUI();
         gameModel.setConfig(newConfig);
@@ -149,10 +157,13 @@ public class Controller extends MainFrame {
                     return;
                 }
                 break;
-            case JOptionPane.NO_OPTION: break;
+            case JOptionPane.NO_OPTION:
+                break;
             case JOptionPane.CANCEL_OPTION:
-            case JOptionPane.CLOSED_OPTION: return;
-            default: throw new RuntimeException("Unexpected option chosen");
+            case JOptionPane.CLOSED_OPTION:
+                return;
+            default:
+                throw new RuntimeException("Unexpected option chosen");
         }
         System.exit(0);
     }
@@ -166,10 +177,13 @@ public class Controller extends MainFrame {
                     return;
                 }
                 break;
-            case JOptionPane.NO_OPTION: break;
+            case JOptionPane.NO_OPTION:
+                break;
             case JOptionPane.CANCEL_OPTION:
-            case JOptionPane.CLOSED_OPTION: return;
-            default: throw new RuntimeException("Unexpected option chosen");
+            case JOptionPane.CLOSED_OPTION:
+                return;
+            default:
+                throw new RuntimeException("Unexpected option chosen");
         }
         setCurrentFile(null);
         config = new Config();
@@ -192,13 +206,16 @@ public class Controller extends MainFrame {
                     return;
                 }
                 break;
-            case JOptionPane.NO_OPTION: break;
+            case JOptionPane.NO_OPTION:
+                break;
             case JOptionPane.CANCEL_OPTION:
-            case JOptionPane.CLOSED_OPTION: return;
-            default: throw new RuntimeException("Unexpected option chosen");
+            case JOptionPane.CLOSED_OPTION:
+                return;
+            default:
+                throw new RuntimeException("Unexpected option chosen");
         }
 
-        try (FileInputStream in = new FileInputStream(currentFile)){
+        try (FileInputStream in = new FileInputStream(currentFile)) {
             Config newConfig = ConfigParser.deserialize(in);
             setConfig(newConfig);
         } catch (IOException e) {
@@ -219,7 +236,7 @@ public class Controller extends MainFrame {
                 null,
                 null,
                 "Yes"
-                );
+        );
     }
 
     private File currentFile = null;
@@ -236,7 +253,7 @@ public class Controller extends MainFrame {
             setCurrentFile(file);
         }
         if (currentFile != null) {
-            try (FileOutputStream out = new FileOutputStream(currentFile)){
+            try (FileOutputStream out = new FileOutputStream(currentFile)) {
                 config.setAliveCells(gameModel.getAliveCells());
                 ByteArrayOutputStream baos = ConfigParser.serialize(config);
                 baos.writeTo(out);

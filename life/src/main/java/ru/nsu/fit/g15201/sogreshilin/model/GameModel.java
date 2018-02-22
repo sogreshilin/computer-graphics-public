@@ -71,10 +71,22 @@ public class GameModel {
 
     public void setStateAt(int i, int j, State state) {
         cells[j][i].setState(state);
-        cells[j][i].getAllNeighbours().forEach(Cell::recomputeImpact);
+        cells[j][i].getAllNeighbours().forEach(this::recomputeImpact);
 
         notifyStateChanged(j, i, state);
         notifyImpactChanged();
+    }
+
+    public void recomputeImpact(Cell cell) {
+        long aliveFirstNeighbours = cell.getFirstNeighbours().stream()
+                .filter(c -> c.getState() == State.ALIVE)
+                .count();
+        long aliveSecondNeighbours = cell.getSecondNeighbours().stream()
+                .filter(c -> c.getState() == State.ALIVE)
+                .count();
+        double impact = aliveFirstNeighbours * config.getFirstImpact() +
+                aliveSecondNeighbours * config.getSecondImpact();
+        cell.setImpact(impact);
     }
 
     public void nextGeneration() {
@@ -90,7 +102,7 @@ public class GameModel {
     private void recomputeAllImpacts() {
         for (int i = 0; i < rowsCount; ++i) {
             for (int j = 0; j < columnsCount - (i & 1); ++j) {
-                cells[i][j].recomputeImpact();
+                recomputeImpact(cells[i][j]);
                 notifyStateChanged(i, j, cells[i][j].getState());
             }
         }
@@ -158,7 +170,7 @@ public class GameModel {
         return result.toString();
     }
 
-    private static final int CLOCK = 1000;
+    private static final int CLOCK = 50;
 
     private Timer timer;
     public void startTimer() {
