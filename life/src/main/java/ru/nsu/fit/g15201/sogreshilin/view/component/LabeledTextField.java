@@ -15,8 +15,6 @@ public class LabeledTextField extends JPanel {
         this.value = value;
     }
 
-    public enum Orientation {H, V}
-
     private JLabel label;
     private JTextField textField;
     private List<ValueChangedObserver> observers = new ArrayList<>();
@@ -67,9 +65,4 @@ public class LabeledTextField extends JPanel {
     public interface ValueChangedObserver {
         void setValue(double value);
     }
-
-
-
-    // todo check if text inside textField is correct
-
 }

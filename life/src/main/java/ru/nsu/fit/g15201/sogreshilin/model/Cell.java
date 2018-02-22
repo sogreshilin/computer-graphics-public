@@ -45,21 +45,21 @@ public class Cell {
                 .collect(Collectors.toList());
     }
 
-    public void nextGeneration() {
-        switch (state) {
-            case DEAD:
-                if (GameModel.BIRTH_BEGIN <= impact && impact <= GameModel.BIRTH_END) {
-                    setState(State.ALIVE);
-                }
-                break;
-            case ALIVE:
-                if (impact < GameModel.LIVE_BEGIN || impact > GameModel.LIVE_END) {
-                    setState(State.DEAD);
-                }
-                break;
-            default: throw new RuntimeException("Unexpected cell state");
-        }
-    }
+//    public void nextGeneration() {
+//        switch (state) {
+//            case DEAD:
+//                if (GameModel.BIRTH_BEGIN <= impact && impact <= GameModel.BIRTH_END) {
+//                    setState(State.ALIVE);
+//                }
+//                break;
+//            case ALIVE:
+//                if (impact < GameModel.LIVE_BEGIN || impact > GameModel.LIVE_END) {
+//                    setState(State.DEAD);
+//                }
+//                break;
+//            default: throw new RuntimeException("Unexpected cell state");
+//        }
+//    }
 
     public double getImpact() {
         return impact;

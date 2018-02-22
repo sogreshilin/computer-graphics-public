@@ -45,7 +45,7 @@ public class MenuToolbarManager {
 
             frame.addSubMenu("Simulation", KeyEvent.VK_H);
             menuItems.put("Simulation/Run", frame.addMenuItem("Simulation/Run", "Run the game", KeyEvent.VK_R, "run.png", "onRun"));
-            menuItems.put("Simulation/Pause", frame.addMenuItem("Simulation/Pause", "Make one step", KeyEvent.VK_S, "pause.png", "onPause"));
+            menuItems.put("Simulation/Pause", frame.addMenuItem("Simulation/Pause", "Pause running game", KeyEvent.VK_S, "pause.png", "onPause"));
             menuItems.put("Simulation/Step", frame.addMenuItem("Simulation/Step", "Make one step", KeyEvent.VK_S, "step.png", "onStep"));
 
             frame.addSubMenu("Help", KeyEvent.VK_H);

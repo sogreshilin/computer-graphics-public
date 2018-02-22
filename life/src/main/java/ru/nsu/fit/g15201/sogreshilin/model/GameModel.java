@@ -7,17 +7,12 @@ import ru.nsu.fit.g15201.sogreshilin.model.io.Config;
 import ru.nsu.fit.g15201.sogreshilin.view.Point;
 
 public class GameModel {
-    static double LIVE_BEGIN = 2.0;
-    static double LIVE_END = 3.3;
-    static double BIRTH_BEGIN = 2.3;
-    static double BIRTH_END = 2.9;
-    static double FST_IMPACT = 1.0;
-    static double SND_IMPACT = 0.3;
+    private static final int TIME_TICK = 50;
 
     private Cell[][] cells;
     private int rowsCount;
     private int columnsCount;
-
+    private Timer timer;
     private Config config;
 
     private GameModel(int rowsCount, int columnsCount) {
@@ -93,7 +88,22 @@ public class GameModel {
         recomputeAllImpacts();
         for (int i = 0; i < rowsCount; ++i) {
             for (int j = 0; j < columnsCount - (i & 1); ++j) {
-                cells[i][j].nextGeneration();
+                Cell cell = cells[i][j];
+                switch (cell.getState()) {
+                    case DEAD:
+                        if (config.getBirthBegin() <= cell.getImpact() &&
+                                cell.getImpact() <= config.getBirthEnd()) {
+                            cell.setState(State.ALIVE);
+                        }
+                        break;
+                    case ALIVE:
+                        if (cell.getImpact() < config.getLiveBegin() ||
+                                cell.getImpact() > config.getLiveEnd()) {
+                            cell.setState(State.DEAD);
+                        }
+                        break;
+                    default: throw new RuntimeException("Unexpected cell state");
+                }
             }
         }
         recomputeAllImpacts();
@@ -170,9 +180,6 @@ public class GameModel {
         return result.toString();
     }
 
-    private static final int CLOCK = 50;
-
-    private Timer timer;
     public void startTimer() {
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -180,7 +187,7 @@ public class GameModel {
             public void run() {
                 nextGeneration();
             }
-        }, CLOCK, CLOCK);
+        }, TIME_TICK, TIME_TICK);
     }
 
     public void stopTimer() {

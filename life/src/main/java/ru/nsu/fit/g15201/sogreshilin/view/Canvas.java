@@ -189,13 +189,13 @@ public class Canvas extends JPanel {
             Graphics2D graphics2D = canvas.createGraphics();
             graphics2D.setColor(color);
             graphics2D.setStroke(bs);
-            int[] xs = new int[6];
-            int[] ys = new int[6];
-            for (int i = 0; i < 6; ++i) {
+            int[] xs = new int[Hex.VERTEX_COUNT];
+            int[] ys = new int[Hex.VERTEX_COUNT];
+            for (int i = 0; i < Hex.VERTEX_COUNT; ++i) {
                 xs[i] = vertexes[i].getX();
                 ys[i] = vertexes[i].getY();
             }
-            graphics2D.drawPolygon(xs, ys, 6);
+            graphics2D.drawPolygon(xs, ys, Hex.VERTEX_COUNT);
         }
 
     }
@@ -320,11 +320,19 @@ public class Canvas extends JPanel {
             for (int j = 0; j < (columnsCount - i % 2); ++j) {
                 Point hexCenter = getPixelByHex(i, j);
                 double impact = doubles == null ? 0 : doubles[k];
-                drawText(impacts, leftMargin + hexCenter.getX(), topMargin + hexCenter.getY(), String.format("%2.1f", impact));
+                drawText(impacts, leftMargin + hexCenter.getX(), topMargin + hexCenter.getY(), numberToString(impact));
                 ++k;
             }
         }
         repaint();
+    }
+
+    private String numberToString(double impact) {
+        if ((int) impact == impact) {
+            return String.format("%d", (int) impact);
+        } else {
+            return String.format("%2.1f", impact);
+        }
     }
 
     public void clearField() {
