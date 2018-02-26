@@ -189,14 +189,6 @@ public class GameModel {
         timer.cancel();
     }
 
-    public int getRowsCount() {
-        return rowsCount;
-    }
-
-    public int getColumnsCount() {
-        return columnsCount;
-    }
-
     private final List<CellStateChangedObserver> cellStateChangedObservers = new ArrayList<>();
 
     public void addCellStateObserver(CellStateChangedObserver observer) {
@@ -264,7 +256,6 @@ public class GameModel {
             }
         }
     }
-
 
     public ArrayList<Point> getAliveCells() {
         ArrayList<Point> aliveCells = new ArrayList<>();

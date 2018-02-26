@@ -9,12 +9,6 @@ import java.awt.*;
 
 class GameRulesPanel extends JPanel {
     private Config config;
-    private final LabeledTextField liveBegin;
-    private final LabeledTextField liveEnd;
-    private final LabeledTextField birthBegin;
-    private final LabeledTextField birthEnd;
-    private final LabeledTextField firstImpact;
-    private final LabeledTextField secondImpact;
 
     public GameRulesPanel(Config config) {
         this.config = config;
@@ -22,22 +16,22 @@ class GameRulesPanel extends JPanel {
         setLayout(new GridLayout(1, 3));
         JPanel live = new JPanel(new GridLayout(2, 1));
         live.setBorder(new TitledBorder("Live"));
-        liveBegin = new LabeledTextField("Begin", config.getLiveBegin());
-        liveEnd = new LabeledTextField("End", config.getLiveEnd());
+        LabeledTextField liveBegin = new LabeledTextField("Begin", config.getLiveBegin());
+        LabeledTextField liveEnd = new LabeledTextField("End", config.getLiveEnd());
         live.add(liveBegin);
         live.add(liveEnd);
 
         JPanel birth = new JPanel(new GridLayout(2, 1));
         birth.setBorder(new TitledBorder("Birth"));
-        birthBegin = new LabeledTextField("Begin", config.getBirthBegin());
-        birthEnd = new LabeledTextField("End", config.getBirthEnd());
+        LabeledTextField birthBegin = new LabeledTextField("Begin", config.getBirthBegin());
+        LabeledTextField birthEnd = new LabeledTextField("End", config.getBirthEnd());
         birth.add(birthBegin);
         birth.add(birthEnd);
 
         JPanel impact = new JPanel(new GridLayout(2, 1));
         impact.setBorder(new TitledBorder("Impact"));
-        firstImpact = new LabeledTextField("First neighbours", config.getFirstImpact());
-        secondImpact = new LabeledTextField("Second neighbours", config.getSecondImpact());
+        LabeledTextField firstImpact = new LabeledTextField("First neighbours", config.getFirstImpact());
+        LabeledTextField secondImpact = new LabeledTextField("Second neighbours", config.getSecondImpact());
         impact.add(firstImpact);
         impact.add(secondImpact);
 

@@ -22,7 +22,9 @@ public class ConfigParser {
         while ((rawString = removeComments(rawString)).isEmpty()) {
             rawString = reader.readLine();
         }
-        return rawString.replaceAll("^\\s+|\\s+$", "").replaceAll("\\s+", " ");
+        return rawString
+                .replaceAll("^\\s+|\\s+$", "")
+                .replaceAll("\\s+", " ");
     }
 
     public static Config deserialize(InputStream in) throws IOException {

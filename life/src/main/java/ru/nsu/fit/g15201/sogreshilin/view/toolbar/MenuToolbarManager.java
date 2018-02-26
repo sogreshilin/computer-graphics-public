@@ -14,14 +14,9 @@ public class MenuToolbarManager {
 
     private final Map<String, JButton> buttons = new HashMap<>();
     private final Map<String, JMenuItem> menuItems = new HashMap<>();
-    private boolean constructingModeEnabled;
-    private boolean settingsEnabled;
-    private JLabel statusLabelListeners;
 
     public MenuToolbarManager(MainFrame mainFrame) {
         frame = mainFrame;
-        JMenuBar menuBar = mainFrame.getJMenuBar();
-        JToolBar toolBar = mainFrame.getJToolBar();
     }
 
     public void setupMenu() {
@@ -114,10 +109,6 @@ public class MenuToolbarManager {
         setEnabled("Edit/Clear", b);
         setEnabled("Edit/Settings", b);
         setEnabled("Simulation/Step", b);
-    }
-
-    public void setSettingsEnabled(boolean b) {
-        setEnabled("Edit/Settings", b);
     }
 
     public void setStatusLabelListeners(JLabel statusLabel) {

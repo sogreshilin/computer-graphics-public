@@ -1,8 +1,6 @@
 package ru.nsu.fit.g15201.sogreshilin.view.component;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -15,17 +13,17 @@ public class LabeledSliderWithTextField extends JPanel {
 
     private final List<ValueChangedObserver> observers = new ArrayList<>();
 
-    public LabeledSliderWithTextField(String label, int min, int max, int spacing) {
+    public LabeledSliderWithTextField(String labelText, int min, int max, int spacing) {
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
 
-        JLabel label1 = new JLabel(label);
-        label1.setPreferredSize(new Dimension(200, 20));
+        JLabel label = new JLabel(labelText);
+        label.setPreferredSize(new Dimension(200, 20));
         slider = new JSlider(min, max);
         slider.setSnapToTicks(true);
         slider.setFocusable(false);
         textField = new JTextField(5);
-        add(label1, constraints);
+        add(label, constraints);
         add(slider, constraints);
         add(textField, constraints);
 
