@@ -80,7 +80,6 @@ public class MenuToolbarManager {
             frame.addToolBarSeparator();
 
             buttons.put("Help/About", frame.addToolBarButton("Help/About"));
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -6,10 +6,10 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-public class GameModePanel extends JPanel {
+class GameModePanel extends JPanel {
     private Config config;
-    private JRadioButton replaceMode;
-    private JRadioButton xorMode;
+    private final JRadioButton replaceMode;
+    private final JRadioButton xorMode;
 
     public GameModePanel(Config config) {
         setBorder(new TitledBorder("Color mode"));
@@ -23,13 +23,9 @@ public class GameModePanel extends JPanel {
         replaceMode.setSelected(config.getMode() == Config.FillMode.REPLACE);
         xorMode.setSelected(config.getMode() == Config.FillMode.XOR);
 
-        replaceMode.addActionListener(e -> {
-            getConfig().setMode(Config.FillMode.REPLACE);
-        });
+        replaceMode.addActionListener(e -> getConfig().setMode(Config.FillMode.REPLACE));
 
-        xorMode.addActionListener(e -> {
-            getConfig().setMode(Config.FillMode.XOR);
-        });
+        xorMode.addActionListener(e -> getConfig().setMode(Config.FillMode.XOR));
 
         add(replaceMode);
         add(xorMode);
@@ -41,7 +37,7 @@ public class GameModePanel extends JPanel {
         xorMode.setSelected(config.getMode() == Config.FillMode.XOR);
     }
 
-    public Config getConfig() {
+    private Config getConfig() {
         return config;
     }
 }

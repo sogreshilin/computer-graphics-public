@@ -8,11 +8,11 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class FieldSizePanel extends JPanel {
+class FieldSizePanel extends JPanel {
 
     private Config config;
-    private JTextField widthTextField;
-    private JTextField heightTextField;
+    private final JTextField widthTextField;
+    private final JTextField heightTextField;
 
     public FieldSizePanel(Config config) {
         this.config = config;
@@ -59,11 +59,13 @@ public class FieldSizePanel extends JPanel {
                 }
                 try {
                     heightTextField.setForeground(Color.BLACK);
-                    int val = Integer.valueOf(heightTextField.getText());
-                    if (val <= 0) {
-                        throw new NumberFormatException();
+                    int rawHeight = Integer.valueOf(heightTextField.getText());
+                    if (rawHeight <= 0) {
+                        heightTextField.setForeground(Color.RED);
+                        getConfig().setFieldHeight(-1);
+                        return;
                     }
-                    getConfig().setFieldHeight(val);
+                    getConfig().setFieldHeight(rawHeight);
                 } catch (NumberFormatException ex) {
                     heightTextField.setForeground(Color.RED);
                     getConfig().setFieldHeight(-1);
@@ -81,7 +83,7 @@ public class FieldSizePanel extends JPanel {
         heightTextField.setText(String.valueOf(config.getFieldHeight()));
     }
 
-    public Config getConfig() {
+    private Config getConfig() {
         return config;
     }
 }

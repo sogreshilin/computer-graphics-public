@@ -7,10 +7,10 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-public class CellPropertiesPanel extends JPanel {
+class CellPropertiesPanel extends JPanel {
     private static final int SPACING = 1;
-    private LabeledSliderWithTextField lineThickness;
-    private LabeledSliderWithTextField cellSize;
+    private final LabeledSliderWithTextField lineThickness;
+    private final LabeledSliderWithTextField cellSize;
     private Config config;
 
     public CellPropertiesPanel(Config config) {
@@ -18,8 +18,16 @@ public class CellPropertiesPanel extends JPanel {
         setBorder(new TitledBorder("Cell properties"));
         setLayout(new GridLayout(2, 1));
 
-        lineThickness = new LabeledSliderWithTextField("Line thickness", config.MIN_THICKNESS, config.MAX_THICKNESS, SPACING);
-        cellSize = new LabeledSliderWithTextField("Cell size", config.MIN_SIZE, config.MAX_SIZE, SPACING);
+        lineThickness = new LabeledSliderWithTextField(
+                "Line thickness",
+                Config.MIN_THICKNESS,
+                Config.MAX_THICKNESS,
+                SPACING);
+        cellSize = new LabeledSliderWithTextField(
+                "Cell size",
+                Config.MIN_SIZE,
+                Config.MAX_SIZE,
+                SPACING);
 
         lineThickness.setValue(config.getLineThickness());
         cellSize.setValue(config.getCellSize());

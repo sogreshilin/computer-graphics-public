@@ -7,11 +7,6 @@ public class ExtensionFileFilter extends FileFilter {
     private final String extension;
     private final String description;
 
-    /**
-     * Constructs filter
-     * @param extension - extension (without point), for example, "txt"
-     * @param description - file type description, for example, "Text files"
-     */
     public ExtensionFileFilter(String extension, String description) {
         this.extension = extension;
         this.description = description;

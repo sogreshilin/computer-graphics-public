@@ -12,17 +12,13 @@ import ru.nsu.fit.g15201.sogreshilin.view.settings.ParametersForm;
 import ru.nsu.fit.g15201.sogreshilin.view.toolbar.MenuToolbarManager;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
 
-public class Controller extends MainFrame {
+@SuppressWarnings("WeakerAccess")
+class Controller extends MainFrame {
     private static final int MIN_WIDTH = 800;
     private static final int MIN_HEIGHT = 600;
     private static final String EXTENSION = "life";
@@ -35,13 +31,13 @@ public class Controller extends MainFrame {
     private static final int SAVE_CANCELLED = 1;
 
     private Config config;
-    private GameModel gameModel;
-    private Canvas gameField;
-    private JScrollPane scrollPane;
+    private final GameModel gameModel;
+    private final Canvas gameField;
+    private final JScrollPane scrollPane;
     private MenuToolbarManager manager;
-    private ParametersForm parameters;
+    private final ParametersForm parameters;
 
-    public Controller(Config config) {
+    private Controller(Config config) {
         super(MIN_WIDTH, MIN_HEIGHT, TITLE);
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
 
@@ -127,7 +123,7 @@ public class Controller extends MainFrame {
         return config.getMode();
     }
 
-    public void setConfig(Config newConfig) {
+    private void setConfig(Config newConfig) {
         gameField.setConfig(newConfig);
         scrollPane.updateUI();
         gameModel.setConfig(newConfig);
@@ -212,7 +208,6 @@ public class Controller extends MainFrame {
             default:
                 throw new RuntimeException("Unexpected option chosen");
         }
-
         try (FileInputStream in = new FileInputStream(currentFile)) {
             Config newConfig = ConfigParser.deserialize(in);
             setConfig(newConfig);
@@ -225,7 +220,7 @@ public class Controller extends MainFrame {
 
     }
 
-    public int showSaveOptionDialog() {
+    private int showSaveOptionDialog() {
         return JOptionPane.showOptionDialog(this,
                 "Do you want to save current game state?",
                 "Save",
@@ -253,8 +248,8 @@ public class Controller extends MainFrame {
         if (currentFile != null) {
             try (FileOutputStream out = new FileOutputStream(currentFile)) {
                 config.setAliveCells(gameModel.getAliveCells());
-                ByteArrayOutputStream baos = ConfigParser.serialize(config);
-                baos.writeTo(out);
+                ByteArrayOutputStream byteArrayOutputStream = ConfigParser.serialize(config);
+                byteArrayOutputStream.writeTo(out);
                 return SAVED_SUCCESSFULLY;
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(this,

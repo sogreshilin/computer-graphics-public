@@ -6,39 +6,33 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 public class LabeledSliderWithTextField extends JPanel {
-    private JLabel label;
-    private JSlider slider;
-    private JTextField textField;
+    private final JSlider slider;
+    private final JTextField textField;
 
-    private List<ValueChangedObserver> observers = new ArrayList<>();
+    private final List<ValueChangedObserver> observers = new ArrayList<>();
 
     public LabeledSliderWithTextField(String label, int min, int max, int spacing) {
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
 
-        this.label = new JLabel(label);
-        this.label.setPreferredSize(new Dimension(200, 20));
+        JLabel label1 = new JLabel(label);
+        label1.setPreferredSize(new Dimension(200, 20));
         slider = new JSlider(min, max);
         slider.setSnapToTicks(true);
         slider.setFocusable(false);
         textField = new JTextField(5);
-        add(this.label, constraints);
+        add(label1, constraints);
         add(slider, constraints);
         add(textField, constraints);
 
-        slider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                int value = slider.getValue();
-                notifyValueChanged(value);
-                textField.setText(String.valueOf(value));
-            }
+        slider.addChangeListener(e -> {
+            int value = slider.getValue();
+            notifyValueChanged(value);
+            textField.setText(String.valueOf(value));
         });
 
         textField.addKeyListener(new KeyAdapter() {
@@ -57,7 +51,8 @@ public class LabeledSliderWithTextField extends JPanel {
                          textField.setForeground(Color.black);
                          slider.setValue(value);
                      } else {
-                         throw new NumberFormatException();
+                         textField.setForeground(Color.red);
+                         notifyValueChanged(min - 1);
                      }
                  } catch (NumberFormatException ex) {
                      textField.setForeground(Color.red);

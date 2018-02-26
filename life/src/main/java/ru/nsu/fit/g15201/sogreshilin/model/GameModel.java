@@ -7,7 +7,7 @@ import ru.nsu.fit.g15201.sogreshilin.model.io.Config;
 import ru.nsu.fit.g15201.sogreshilin.view.Point;
 
 public class GameModel {
-    private static final int TIME_TICK = 50;
+    private static final int TIME_TICK = 1000;
 
     private Cell[][] cells;
     private int rowsCount;
@@ -72,7 +72,7 @@ public class GameModel {
         notifyImpactChanged();
     }
 
-    public void recomputeImpact(Cell cell) {
+    private void recomputeImpact(Cell cell) {
         long aliveFirstNeighbours = cell.getFirstNeighbours().stream()
                 .filter(c -> c.getState() == State.ALIVE)
                 .count();
@@ -120,16 +120,11 @@ public class GameModel {
     }
 
     private boolean doesFieldContainCellWithCoordinates(int i, int j) {
-        if (i < 0 || i >= rowsCount || j < 0) {
-            return false;
-        }
-
-        if ((i & 1) == 0 && j >= columnsCount ||
-            (i & 1) != 0 && j >= columnsCount - 1) {
-            return false;
-        }
-
-        return true;
+        return  i >= 0 &&
+                i < rowsCount &&
+                j >= 0 &&
+                ((i & 1) != 0 || j < columnsCount)
+                && ((i & 1) == 0 || j < columnsCount - 1);
     }
 
     private List<Cell> getFirstNeighboursOf(int i, int j) {
@@ -202,25 +197,25 @@ public class GameModel {
         return columnsCount;
     }
 
-    private List<CellStateChangedObserver> cellStateChangedObservers = new ArrayList<>();
+    private final List<CellStateChangedObserver> cellStateChangedObservers = new ArrayList<>();
 
     public void addCellStateObserver(CellStateChangedObserver observer) {
         cellStateChangedObservers.add(observer);
     }
 
-    public void notifyStateChanged(int i, int j, State state) {
+    private void notifyStateChanged(int i, int j, State state) {
         for (CellStateChangedObserver observer : cellStateChangedObservers) {
             observer.onCellStateChanged(i, j, state);
         }
     }
 
-    private List<CellsImpactChangedObserver> cellsImpactChangedObservers = new ArrayList<>();
+    private final List<CellsImpactChangedObserver> cellsImpactChangedObservers = new ArrayList<>();
 
     public void addCellsImpactObserver(CellsImpactChangedObserver observer) {
         cellsImpactChangedObservers.add(observer);
     }
 
-    public void notifyImpactChanged() {
+    private void notifyImpactChanged() {
         for (CellsImpactChangedObserver observer : cellsImpactChangedObservers) {
             observer.onImpactChanged(getImpacts());
         }

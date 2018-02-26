@@ -12,20 +12,17 @@ public class ParametersForm extends JFrame {
     private static final String RULES_USAGE = "Values has to be ordered as\n" +
             "LIVE_BEGIN ≤ BIRTH_BEGIN ≤ BIRTH_END ≤ LIVE_END";
 
-    private Config oldConfig;
     private Config newConfig;
-    private GameModePanel gameModePanel;
-    private FieldSizePanel fieldSizePanel;
-    private CellPropertiesPanel cellPropertiesPanel;
-    private GameRulesPanel gameRulesPanel;
+    private final GameModePanel gameModePanel;
+    private final FieldSizePanel fieldSizePanel;
+    private final CellPropertiesPanel cellPropertiesPanel;
+    private final GameRulesPanel gameRulesPanel;
 
-    private ArrayList<ConfigChangedObserver> observers = new ArrayList<>();
-    private Config config;
+    private final ArrayList<ConfigChangedObserver> observers = new ArrayList<>();
 
     public ParametersForm(JFrame parent, Config config) throws HeadlessException {
         super("Parameters");
 
-        oldConfig = config;
         newConfig = new Config(config);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -68,12 +65,11 @@ public class ParametersForm extends JFrame {
                             JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                if (!gameRulesCorrect) {
-                    JOptionPane.showMessageDialog(ParametersForm.this,
-                            RULES_USAGE,
-                            "Invalid game rules",
-                            JOptionPane.ERROR_MESSAGE);
-                }
+                JOptionPane.showMessageDialog(ParametersForm.this,
+                        RULES_USAGE,
+                        "Invalid game rules",
+                        JOptionPane.ERROR_MESSAGE);
+
 
             }
         });
@@ -111,12 +107,7 @@ public class ParametersForm extends JFrame {
                 newConfig.getBirthEnd() <= newConfig.getLiveEnd();
     }
 
-    public void dispose() {
-        super.dispose();
-    }
-
     public void setConfig(Config config) {
-        this.config = config;
         this.newConfig = new Config(config);
         gameModePanel.setConfig(newConfig);
         fieldSizePanel.setConfig(newConfig);
@@ -132,7 +123,7 @@ public class ParametersForm extends JFrame {
         observers.add(observer);
     }
 
-    public void notifyConfigChanged(Config newConfig) {
+    private void notifyConfigChanged(Config newConfig) {
         for (ConfigChangedObserver observer: observers) {
             observer.setConfig(newConfig);
         }

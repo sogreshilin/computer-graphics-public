@@ -9,19 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LabeledTextField extends JPanel {
-    private double value;
-
-    public void setValue(double value) {
-        this.value = value;
-    }
-
-    private JLabel label;
-    private JTextField textField;
-    private List<ValueChangedObserver> observers = new ArrayList<>();
+    private final JTextField textField;
+    private final List<ValueChangedObserver> observers = new ArrayList<>();
 
     public LabeledTextField(String name, double value) {
         setLayout( new GridLayout(2, 1));
-        label = new JLabel(name);
+        JLabel label = new JLabel(name);
         textField = new JTextField(String.valueOf(value));
         add(label);
         add(textField);

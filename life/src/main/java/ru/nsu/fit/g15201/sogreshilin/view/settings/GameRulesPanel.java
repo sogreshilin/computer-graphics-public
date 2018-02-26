@@ -7,16 +7,14 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-public class GameRulesPanel extends JPanel {
-
-
+class GameRulesPanel extends JPanel {
     private Config config;
-    private LabeledTextField liveBegin;
-    private LabeledTextField liveEnd;
-    private LabeledTextField birthBegin;
-    private LabeledTextField birthEnd;
-    private LabeledTextField firstImpact;
-    private LabeledTextField secondImpact;
+    private final LabeledTextField liveBegin;
+    private final LabeledTextField liveEnd;
+    private final LabeledTextField birthBegin;
+    private final LabeledTextField birthEnd;
+    private final LabeledTextField firstImpact;
+    private final LabeledTextField secondImpact;
 
     public GameRulesPanel(Config config) {
         this.config = config;
@@ -74,19 +72,7 @@ public class GameRulesPanel extends JPanel {
         config.setSecondImpact(secondImpact);
     }
 
-
     public void setConfig(Config config) {
         this.config = config;
-        this.liveBegin.setValue(config.getLiveBegin());
-        this.liveEnd.setValue(config.getLiveEnd());
-        this.birthBegin.setValue(config.getBirthBegin());
-        this.birthEnd.setValue(config.getBirthEnd());
-        this.firstImpact.setValue(config.getFirstImpact());
-        this.secondImpact.setValue(config.getSecondImpact());
-
-    }
-
-    public Config getConfig() {
-        return config;
     }
 }

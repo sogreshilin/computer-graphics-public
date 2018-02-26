@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import ru.nsu.fit.g15201.sogreshilin.view.Constants;
 
-public class Cell {
+class Cell {
     private double impact;
-    private List<Cell> firstNeighbours = new ArrayList<>(Constants.FIRST_NEIGHBOURS_COUNT);
-    private List<Cell> secondNeighbours = new ArrayList<>(Constants.SECOND_NEIGHBOURS_COUNT);
+    private List<Cell> firstNeighbours = new ArrayList<>();
+    private List<Cell> secondNeighbours = new ArrayList<>();
     private State state;
 
     public Cell(State state) {
@@ -44,22 +43,6 @@ public class Cell {
         return Stream.concat(firstNeighbours.stream(), secondNeighbours.stream())
                 .collect(Collectors.toList());
     }
-
-//    public void nextGeneration() {
-//        switch (state) {
-//            case DEAD:
-//                if (GameModel.BIRTH_BEGIN <= impact && impact <= GameModel.BIRTH_END) {
-//                    setState(State.ALIVE);
-//                }
-//                break;
-//            case ALIVE:
-//                if (impact < GameModel.LIVE_BEGIN || impact > GameModel.LIVE_END) {
-//                    setState(State.DEAD);
-//                }
-//                break;
-//            default: throw new RuntimeException("Unexpected cell state");
-//        }
-//    }
 
     public double getImpact() {
         return impact;

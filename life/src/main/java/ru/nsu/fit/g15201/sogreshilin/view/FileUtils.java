@@ -12,37 +12,25 @@ import java.nio.charset.Charset;
 import java.util.Objects;
 
 public class FileUtils {
-    private static File dataDirectory = new File("./FIT_15201_Sogreshilin_Life_Data");
-    /**
-     * Returns File pointing to Data directory of current project. If Data directory is not found, returns project directory.
-     * @return File object.
-     */
+    private static File DATA_DIR = new File("./FIT_15201_Sogreshilin_Life_Data");
+
     private static File getDataDirectory() {
-        if(dataDirectory == null) {
-            try {
-                String path = URLDecoder.decode(MainFrame.class.getProtectionDomain().getCodeSource().getLocation().getFile(), Charset.defaultCharset().toString());
-                dataDirectory = new File(path).getParentFile();
-            } catch (UnsupportedEncodingException e) {
-                dataDirectory = new File(".");
-            }
-            if(dataDirectory == null || !dataDirectory.exists()) dataDirectory = new File(".");
-            for(File f: Objects.requireNonNull(dataDirectory.listFiles())) {
-                if(f.isDirectory() && f.getName().endsWith("_Data")) {
-                    dataDirectory = f;
-                    break;
-                }
+        try {
+            String path = URLDecoder.decode(MainFrame.class.getProtectionDomain().getCodeSource().getLocation().getFile(), Charset.defaultCharset().toString());
+            DATA_DIR = new File(path).getParentFile();
+        } catch (UnsupportedEncodingException e) {
+            DATA_DIR = new File(".");
+        }
+        if(DATA_DIR == null || !DATA_DIR.exists()) DATA_DIR = new File(".");
+        for(File f: Objects.requireNonNull(DATA_DIR.listFiles())) {
+            if(f.isDirectory() && f.getName().endsWith("_Data")) {
+                DATA_DIR = f;
+                break;
             }
         }
-        return dataDirectory;
+        return DATA_DIR;
     }
 
-    /**
-     * Prompts user for file name to save and returns it
-     * @param parent - parent frame for file selection dialog
-     * @param extension - preferred file extension (example: "txt")
-     * @param description - description of specified file type (example: "Text files")
-     * @return File specified by user or null if user canceled operation
-     */
     public static File getSaveFileName(JFrame parent, String extension, String description) {
         JFileChooser fileChooser = new JFileChooser();
         FileFilter filter = new ExtensionFileFilter(extension, description);
@@ -57,13 +45,6 @@ public class FileUtils {
         return null;
     }
 
-    /**
-     * Prompts user for file name to open and returns it
-     * @param parent - parent frame for file selection dialog
-     * @param extension - preferred file extension (example: "txt")
-     * @param description - description of specified file type (example: "Text files")
-     * @return File specified by user or null if user canceled operation
-     */
     public static File getOpenFileName(JFrame parent, String extension, String description) {
         JFileChooser fileChooser = new JFileChooser();
         FileFilter filter = new ExtensionFileFilter(extension, description);

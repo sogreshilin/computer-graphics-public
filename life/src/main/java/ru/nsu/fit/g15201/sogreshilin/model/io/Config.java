@@ -21,7 +21,7 @@ public class Config {
 
     private int lineThickness = 1;
     private int cellSize = 10;
-    private ArrayList<Point> aliveCells = new ArrayList<Point>();
+    private ArrayList<Point> aliveCells = new ArrayList<>();
     private FillMode mode = FillMode.REPLACE;
 
     public enum FillMode { XOR, REPLACE }
@@ -43,7 +43,6 @@ public class Config {
         this.mode = other.mode;
         this.aliveCells = other.aliveCells;
     }
-
 
     public int getFieldWidth() {
         return fieldWidth;
@@ -139,23 +138,5 @@ public class Config {
 
     public void setMode(FillMode mode) {
         this.mode = mode;
-    }
-
-    @Override
-    public String toString() {
-        return "Config{" +
-                "liveBegin=" + liveBegin +
-                ", liveEnd=" + liveEnd +
-                ", birthBegin=" + birthBegin +
-                ", birthEnd=" + birthEnd +
-                ", firstImpact=" + firstImpact +
-                ", secondImpact=" + secondImpact +
-                ", fieldWidth=" + fieldWidth +
-                ", fieldHeight=" + fieldHeight +
-                ", lineThickness=" + lineThickness +
-                ", cellSize=" + cellSize +
-                ", mode=" + mode +
-                ", aliveCells=" + aliveCells +
-                '}';
     }
 }

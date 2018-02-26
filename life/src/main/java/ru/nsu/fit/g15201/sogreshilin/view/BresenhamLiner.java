@@ -42,21 +42,21 @@ class BresenhamLiner {
 
     private List<Point> getLinePixels(int x0, int y0, int x1, int y1) {
         List<Point> pixels = new ArrayList<>();
-        int deltax = x1 - x0;
-        int deltay = y1 - y0;
+        int deltaX = x1 - x0;
+        int deltaY = y1 - y0;
 
-        int dirx = Integer.signum(deltax);
-        int diry = Integer.signum(deltay);
+        int directionX = Integer.signum(deltaX);
+        int directionY = Integer.signum(deltaY);
 
-        deltax = Math.abs(deltax);
-        deltay = Math.abs(deltay);
+        deltaX = Math.abs(deltaX);
+        deltaY = Math.abs(deltaY);
 
-        boolean isAcuteAngle = deltax > deltay;
+        boolean isAcuteAngle = deltaX > deltaY;
 
-        int dx = isAcuteAngle ? dirx : 0;
-        int dy = isAcuteAngle ? 0 : diry;
-        int deltaError = isAcuteAngle ? deltay : deltax;
-        int length = isAcuteAngle ? deltax : deltay;
+        int dx = isAcuteAngle ? directionX : 0;
+        int dy = isAcuteAngle ? 0 : directionY;
+        int deltaError = isAcuteAngle ? deltaY : deltaX;
+        int length = isAcuteAngle ? deltaX : deltaY;
 
         int x = x0;
         int y = y0;
@@ -66,8 +66,8 @@ class BresenhamLiner {
             error += deltaError;
             if (2 * error >= length) {
                 error -= length;
-                y += diry;
-                x += dirx;
+                y += directionY;
+                x += directionX;
             } else {
                 x += dx;
                 y += dy;
