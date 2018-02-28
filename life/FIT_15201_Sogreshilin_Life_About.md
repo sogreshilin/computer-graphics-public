@@ -2,6 +2,8 @@
 
 In this project the Game of Life implemented. The Game of Life is a cellular automaton devised by the British mathematician John Horton Conway in 1970.
 
+![Cover image](https://github.com/sogreshilin/Edu.ComputerGraphics/blob/dev/life/life/cover.png)
+
 Features of the game:
 - ```new```, ```open```, ```save```, ```save as``` to control saving the state of the game.
 - ```XOR```, ```replace``` to choose how to color the field.
