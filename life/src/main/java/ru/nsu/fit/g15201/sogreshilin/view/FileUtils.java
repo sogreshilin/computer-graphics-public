@@ -16,8 +16,10 @@ public class FileUtils {
 
     private static File getDataDirectory() {
         try {
-            String path = URLDecoder.decode(MainFrame.class.getProtectionDomain().getCodeSource().getLocation().getFile(), Charset.defaultCharset().toString());
+            String path = URLDecoder.decode(MainFrame.class.getProtectionDomain().getCodeSource().getLocation().getFile(),
+                    Charset.defaultCharset().toString());
             DATA_DIR = new File(path).getParentFile();
+
         } catch (UnsupportedEncodingException e) {
             DATA_DIR = new File(".");
         }

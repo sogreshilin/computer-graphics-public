@@ -48,6 +48,17 @@ public class ParametersForm extends JFrame {
         buttonPanel.add(okButton);
         southPanel.add(buttonPanel, BorderLayout.SOUTH);
 
+        setButtonListeners(okButton, cancelButton);
+
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setContentPane(mainPanel);
+        pack();
+        setMinimumSize(getSize());
+        setLocationRelativeTo(parent);
+        this.setResizable(true);
+    }
+
+    private void setButtonListeners(JButton okButton, JButton cancelButton) {
         okButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -80,13 +91,6 @@ public class ParametersForm extends JFrame {
                 dispose();
             }
         });
-
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setContentPane(mainPanel);
-        pack();
-        setMinimumSize(getSize());
-        setLocationRelativeTo(parent);
-        this.setResizable(true);
     }
 
     private boolean areAllValuesCorrect() {

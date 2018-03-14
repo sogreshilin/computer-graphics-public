@@ -1,5 +1,6 @@
 package ru.nsu.fit.g15201.sogreshilin.view.toolbar;
 
+import java.awt.*;
 import ru.nsu.fit.g15201.sogreshilin.controller.MainFrame;
 
 import javax.swing.*;
@@ -111,7 +112,7 @@ public class MenuToolbarManager {
         setEnabled("Simulation/Step", b);
     }
 
-    public void setStatusLabelListeners(JLabel statusLabel) {
+    public void setStatusLabelListeners(JLabel statusLabel){
         buttons.values().forEach(b -> b.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
