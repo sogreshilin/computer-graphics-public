@@ -23,20 +23,14 @@ public class MenuToolbarManager {
             menuItems.put("File/New", controller.addMenuItem("File/New", "New", KeyEvent.VK_N, "new.png", controller::onNew));
             menuItems.put("File/Open", controller.addMenuItem("File/Open", "Open", KeyEvent.VK_O, "open.png", controller::onOpen));
             menuItems.put("File/Save", controller.addMenuItem("File/Save", "Save", KeyEvent.VK_S, "save.png", controller::onSave));
-//            menuItems.put("File/Save as", controller.addMenuItem("File/Save as", "Save the game as", KeyEvent.VK_S, "saveas.png", "onSaveAs"));
-            menuItems.put("File/Exit", controller.addMenuItem("File/Exit", "Exit", KeyEvent.VK_X, "exit.png", controller::onExit));
             controller.addMenuSeparator("File");
 
             controller.addSubMenu("Edit", KeyEvent.VK_H);
             menuItems.put("Edit/Select", controller.addMenuItem("Edit/Select", "Select", KeyEvent.VK_S, "select.png", controller::onSelect));
             menuItems.put("Edit/Copy B to C", controller.addMenuItem("Edit/Copy B to C", "Copy B to C", KeyEvent.VK_B, "to_right.png", controller::onCopyToLeft));
             menuItems.put("Edit/Copy C to B", controller.addMenuItem("Edit/Copy C to B", "Copy C to B", KeyEvent.VK_C, "to_left.png", controller::onCopyToRight));
-//            menuItems.put("Edit/Replace", controller.addMenuItem("Edit/Replace", "Replace mode", KeyEvent.VK_R, "replace.png", "onReplace"));
-//            menuItems.put("Edit/Clear", controller.addMenuItem("Edit/Clear", "Clear the field", KeyEvent.VK_C, "clear.png", "onClear"));
-//            menuItems.put("Edit/Settings", controller.addMenuItem("Edit/Settings", "Open parameters", KeyEvent.VK_P, "settings.png", "onSettings"));
-//
+
             controller.addSubMenu("Filter", KeyEvent.VK_H);
-//            menuItems.put("Filter/Grayscale", controller.addMenuItem("Filter/Grayscale", "Grayscale", KeyEvent.VK_G, "grayscale.png", controller::onGrayscale));
             menuItems.put("Filter/Grayscale", controller.addMenuItem("Filter/Grayscale", "Grayscale", KeyEvent.VK_I, "grayscale.png", controller::onGrayscale));
             menuItems.put("Filter/Invert", controller.addMenuItem("Filter/Invert", "Invert", KeyEvent.VK_I, "invert.png", controller::onInvert));
             menuItems.put("Filter/Floyd-Steinberg Dither", controller.addMenuItem("Filter/Floyd-Steinberg Dither", "Floyd-Steinberg Dither", KeyEvent.VK_I, "fs_dither.png", controller::onFloydSteinbergDither));
@@ -57,6 +51,9 @@ public class MenuToolbarManager {
             menuItems.put("Volume/Emission", controller.addMenuItem("Volume/Emission", "Emission", KeyEvent.VK_E, "emission.png", controller::onEmission));
             menuItems.put("Volume/Render", controller.addMenuItem("Volume/Render", "Render volume", KeyEvent.VK_R, "volume.png", controller::onVolumeRender));
 
+            controller.addSubMenu("Help", KeyEvent.VK_H);
+            menuItems.put("Help/About", controller.addMenuItem("Help/About", "Shows copyright information", KeyEvent.VK_A, "about.png", controller::onAbout));
+
         } catch(Exception e) {
             throw new RuntimeException(e);
         }
@@ -67,18 +64,9 @@ public class MenuToolbarManager {
             buttons.put("File/New", controller.addToolBarRegularButton("File/New"));
             buttons.put("File/Open", controller.addToolBarRegularButton("File/Open"));
             buttons.put("File/Save", controller.addToolBarRegularButton("File/Save"));
-//            buttons.put("File/Save as", controller.addToolBarRegularButton("File/Save as"));
 
             controller.addToolBarSeparator();
-//
             buttons.put("Edit/Select", controller.addToolBarToggleButton("Edit/Select"));
-//            System.out.println(buttons);
-//            menuItems.get("Edit/Select").addActionListener(new ActionListener() {
-//                @Override
-//                public void actionPerformed(ActionEvent e) {
-//                    buttons.get("Edit/Select").doClick();
-//                }
-//            });
             buttons.put("Edit/Copy B to C", controller.addToolBarRegularButton("Edit/Copy B to C"));
             buttons.put("Edit/Copy C to B", controller.addToolBarRegularButton("Edit/Copy C to B"));
             buttons.put("Filter/Double", controller.addToolBarRegularButton("Filter/Double"));
@@ -107,18 +95,8 @@ public class MenuToolbarManager {
             buttons.put("Volume/Emission", controller.addToolBarToggleButton("Volume/Emission"));
             buttons.put("Volume/Render", controller.addToolBarRegularButton("Volume/Render"));
 
-//            buttons.put("Edit/Settings", controller.addToolBarRegularButton("Edit/Settings"));
-//            controller.addToolBarSeparator();
-//
-//            buttons.put("View/Impacts", controller.addToolBarRegularButton("View/Impacts"));
-//            controller.addToolBarSeparator();
-//
-//            buttons.put("Simulation/Run", controller.addToolBarRegularButton("Simulation/Run"));
-//            buttons.put("Simulation/Pause", controller.addToolBarRegularButton("Simulation/Pause"));
-//            buttons.put("Simulation/Step", controller.addToolBarRegularButton("Simulation/Step"));
-//            controller.addToolBarSeparator();
-//
-//            buttons.put("Help/About", controller.addToolBarRegularButton("Help/About"));
+            controller.addToolBarSeparator();
+            buttons.put("Help/About", controller.addToolBarRegularButton("Help/About"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

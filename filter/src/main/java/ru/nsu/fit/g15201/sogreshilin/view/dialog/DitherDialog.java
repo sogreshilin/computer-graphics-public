@@ -114,7 +114,6 @@ public class DitherDialog extends JDialog {
     }
 
     private void apply(int redLevels, int greenLevels, int blueLevels) {
-        System.out.println(String.format("call setLevels(%d, %d, %d)", redLevels, greenLevels, blueLevels));
         filter.setLevels(redLevels, greenLevels, blueLevels);
         controller.apply(filter);
     }
@@ -132,17 +131,11 @@ public class DitherDialog extends JDialog {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     int i = matrixSizeComboBox.getSelectedIndex();
-                    System.out.println("selected index = " + i);
                     ((OrderedDithering) filter).setMatrixSize(1 << (i + 1));
                     controller.apply(filter);
                 }
             });
 
         }
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
     }
 }

@@ -101,9 +101,4 @@ public class AngleDialog extends JDialog {
         filter.setAngle(value);
         controller.apply(filter);
     }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-    }
 }

@@ -35,9 +35,7 @@ public class EdgeThresholdDialog extends JDialog {
                 SPACING);
 
         threshold.setValue(EdgeDetection.DEFAULT_THRESHOLD);
-
         threshold.addValueChangedObserver(this::onEdgeThresholdChanged);
-
 
         add(threshold, BorderLayout.CENTER);
         JPanel checkBoxPanel = createCheckBoxPanel();

@@ -136,9 +136,4 @@ public class GammaDialog extends JDialog {
         filter.setGamma(value);
         controller.apply(filter);
     }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-    }
 }

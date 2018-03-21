@@ -2,9 +2,6 @@ package ru.nsu.fit.g15201.sogreshilin.rendering;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.util.ArrayList;
-import java.util.Arrays;
 import ru.nsu.fit.g15201.sogreshilin.controller.FilterAppliedObserver;
 import ru.nsu.fit.g15201.sogreshilin.filter.Filter;
 import static java.lang.Math.*;
@@ -20,9 +17,9 @@ public class VolumeRendering implements Filter {
     private int[] emissionGreen = new int[COUNT];
     private int[] emissionBlue = new int[COUNT];
     private double[] absorption = new double[COUNT];
-    private int xLayers = 200;
-    private int yLayers = 200;
-    private int zLayers = 200;
+    private int xLayers;
+    private int yLayers;
+    private int zLayers;
 
     private double maxScalarFunctionValue = -Double.MAX_VALUE;
     private double minScalarFunctionValue = Double.MAX_VALUE;
@@ -62,7 +59,6 @@ public class VolumeRendering implements Filter {
 
     private void fillEmissionPalette() {
         int k = 0;
-        //todo k = 0 length = 0
         int currentX = config.getEmission().get(k).getX();
         int previousX = 0;
 
@@ -99,12 +95,6 @@ public class VolumeRendering implements Filter {
                 emissionGreen[i] = green;
             }
         }
-    }
-
-    public void setLayers(int xAxis, int yAxis, int zAxis) {
-        xLayers = xAxis;
-        yLayers = yAxis;
-        zLayers = zAxis;
     }
 
     public void setXLayers(int count) {

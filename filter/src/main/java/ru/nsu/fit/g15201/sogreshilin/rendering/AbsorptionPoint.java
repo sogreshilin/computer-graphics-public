@@ -1,7 +1,5 @@
 package ru.nsu.fit.g15201.sogreshilin.rendering;
 
-import java.awt.*;
-
 public class AbsorptionPoint {
     private int x;
     private double value;

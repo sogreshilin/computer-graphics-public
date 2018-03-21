@@ -1,6 +1,5 @@
 package ru.nsu.fit.g15201.sogreshilin.filter;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import ru.nsu.fit.g15201.sogreshilin.controller.Controller;
 import ru.nsu.fit.g15201.sogreshilin.controller.FilterAppliedObserver;
@@ -54,7 +53,6 @@ public class Rotation implements Filter {
         BufferedImage rotatedImage = new BufferedImage(rotatedWidth, rotatedHeight, BufferedImage.TYPE_INT_ARGB);
         for (int x = 0; x < rotatedWidth; ++x) {
             for (int y = 0; y < rotatedHeight; ++y) {
-
                 int xOld = (int) round(cos * (x - halfRotatedWidth) - sin * (y - halfRotatedHeight));
                 int yOld = (int) round(sin * (x - halfRotatedWidth) + cos * (y - halfRotatedHeight));
                 xOld += halfWidth - 1;

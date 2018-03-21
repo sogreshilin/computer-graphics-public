@@ -1,7 +1,6 @@
 package ru.nsu.fit.g15201.sogreshilin.filter.affine;
 
 public class Matrix {
-
     private double[][] matrix;
     private int radius;
 

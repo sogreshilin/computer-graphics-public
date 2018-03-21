@@ -219,19 +219,11 @@ public class ImagesPanel extends JPanel {
                            int[] xCoordinates, double[] yCoordinates) {
         double unitX = (double) GRAPH_WIDTH / initialWidht;
         double unitY = (double) GRAPH_HEIGHT / initialHeight;
-//        graphics.setColor(Color.PINK);
-//        System.out.println("Origin: " + originX + ", " + originY);
-//        System.out.println("UnitX : " + unitX);
-//        System.out.println("UnitY : " + unitY);
-//        System.out.println(ABSORPTION.getX());
-//        System.out.println(GRAPH_WIDTH);
         for (int i = 0; i < xCoordinates.length - 1; ++i) {
-//            System.out.println(String.format("[%d %.1f] [%d %.1f]", xCoordinates[i], yCoordinates[i], xCoordinates[i + 1], yCoordinates[i + 1]));
             int x1 = originX + (int) round(xCoordinates[i] * unitX);
             int y1 = originY - (int) round(yCoordinates[i] * unitY);
             int x2 = originX + (int) round(xCoordinates[i + 1] * unitX);
             int y2 = originY - (int) round(yCoordinates[i + 1] * unitY);
-//            System.out.println(String.format("[%d %d] [%d %d]", x1, y1, x2, y2));
             graphics.drawLine(x1, y1, x2, y2);
         }
     }
@@ -307,15 +299,13 @@ public class ImagesPanel extends JPanel {
         if (scaleCoefficient == 1) {
             return SPACE + 1;
         }
-        int halfWidth = selectWidth / 2 - (selectWidth + 1) % 2;
 
+        int halfWidth = selectWidth / 2 - (selectWidth + 1) % 2;
         if (x - halfWidth <= SPACE) {
             return SPACE + 1;
         }
 
-
         int width = scaledImageWidth;
-
         if (x + halfWidth >= width + SPACE + 1) {
             return width - 2 * halfWidth + SPACE;
         }
@@ -327,14 +317,13 @@ public class ImagesPanel extends JPanel {
         if (scaleCoefficient == 1) {
             return SPACE + 1;
         }
-        int halfHeight = selectHeight / 2 - (selectHeight + 1) % 2;
 
+        int halfHeight = selectHeight / 2 - (selectHeight + 1) % 2;
         if (y - halfHeight <= SPACE) {
             return SPACE + 1;
         }
 
         int height = scaledImageHeight;
-
         if (y + halfHeight >= height + SPACE + 1) {
             return height - 2 * halfHeight + SPACE;
         }
@@ -374,7 +363,6 @@ public class ImagesPanel extends JPanel {
 
     public void drawSelectionRectangle(int x, int y) {
         if (selectionEnabled) {
-
             clearSelection();
 
             int xRectangle = getLeftRectangle(x);

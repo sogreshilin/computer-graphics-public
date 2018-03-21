@@ -39,17 +39,9 @@ public class OrderedDithering implements Dithering {
         redPalette = buildPalette(redLevels);
         greenPalette = buildPalette(greenLevels);
         bluePalette = buildPalette(blueLevels);
-        System.out.println("Levels set");
-        Arrays.stream(redPalette).forEach(e -> System.out.print(e + " "));
-        System.out.println();
-        Arrays.stream(greenPalette).forEach(e -> System.out.print(e + " "));
-        System.out.println();
-        Arrays.stream(bluePalette).forEach(e -> System.out.print(e + " "));
-        System.out.println();
     }
 
     public void setMatrixSize(int size) {
-        System.out.println("setMatrixSize(" + size + ")");
         if (size <= 0) {
             throw new IllegalArgumentException("Ordered dithering matrix size " +
                     "has to be a positive number");
@@ -70,7 +62,6 @@ public class OrderedDithering implements Dithering {
     }
 
     private int[][] doubleMatrix(int[][] matrix) {
-        System.out.printf("doubleMatrix(%d)\n", matrix.length);
         int len = matrix.length;
         int[][] newMatrix = new int[2 * len][2 * len];
 
@@ -94,7 +85,6 @@ public class OrderedDithering implements Dithering {
 
     @Override
     public BufferedImage apply(BufferedImage image) {
-        System.out.println("In filter apply");
         int width = image.getWidth();
         int height = image.getHeight();
         BufferedImage filteredImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -130,22 +120,21 @@ public class OrderedDithering implements Dithering {
             }
         }
         observer.onFilterApplied(filteredImage);
-        System.out.println("Filter applied");
         return filteredImage;
 
     }
 
-    private int previousColorFromPalette(int r, int[] palette) {
+    private int previousColorFromPalette(int currentColor, int[] palette) {
         int k = 0;
-        while (palette[k] < r) {
+        while (palette[k] < currentColor) {
             k++;
         }
         return k == 0 ? 0 : palette[k - 1];
     }
 
-    private int nextColorFromPalette(int r, int[] palette) {
+    private int nextColorFromPalette(int currentColor, int[] palette) {
         int k = 0;
-        while (palette[k] < r) {
+        while (palette[k] < currentColor) {
             k++;
         }
         return palette[k];

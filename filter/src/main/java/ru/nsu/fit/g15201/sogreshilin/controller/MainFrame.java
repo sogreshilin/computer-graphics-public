@@ -223,8 +223,6 @@ public class MainFrame extends JFrame {
         return button;
     }
 
-
-
     public void addToolBarSeparator() {
         toolBar.addSeparator();
     }

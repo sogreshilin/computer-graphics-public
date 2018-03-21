@@ -111,21 +111,4 @@ public class VolumeRenderingDialog extends JDialog {
     private void apply() {
         controller.apply(filter);
     }
-
-    private void onXLayersValueChanged(int value) {
-        filter.setXLayers(value);
-    }
-
-    private void onYLayersValueChanged(int value) {
-        filter.setYLayers(value);
-    }
-
-    private void onZLayersValueChanged(int value) {
-        filter.setZLayers(value);
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-    }
 }

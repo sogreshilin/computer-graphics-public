@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -34,6 +33,8 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
     private static final String TITLE = "Filters";
     private static final java.util.List<String> EXTENSIONS = List.of("bmp", "png");
     private static final String DEFAULT_EXTENSION = "png";
+    private static final String ABOUT = TITLE + ", version 1.0\n" +
+            "Copyright 2018 Sogreshilin Alexander, FIT-15201";
     private final ImagesPanel imagesPanel;
     private final JScrollPane scrollPane;
     private MenuToolbarManager manager;
@@ -46,7 +47,6 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
     private BufferedImage imageBeforeFilter;
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private Config config;
-    private boolean ableToSave = false;
 
     private Controller() {
         super(WIDTH, HEIGHT, TITLE);
@@ -104,19 +104,6 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
     public static void main(String[] args) {
         Controller controller = new Controller();
         controller.setVisible(true);
-//        BufferedImage testImage = new BufferedImage(350, 350, BufferedImage.TYPE_INT_ARGB);
-//        int[] color = new int[] {Color.WHITE.getRGB(), Color.red.getRGB(), Color.green.getRGB(), Color.blue.getRGB()};
-//        for (int i = 0; i < 350; ++i) {
-//            for (int j = 0; j < 350; ++j) {
-//                testImage.setRGB(i, j, color[(i + j) % 4]);
-//            }
-//        }
-//        try {
-//            new Controller().save(testImage, "testImage.png", "png");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
     }
 
     public void onNew() {
@@ -157,7 +144,6 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
 
         manager.setSelectEnabled(true);
         manager.setSelectSelected(false);
-
     }
 
     private void setCurrentFile(File currentFile) {
@@ -178,7 +164,7 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
                 return;
             }
             String extension = FileUtils.getExtension(file);
-            if (extension == "") {
+            if (extension.isEmpty()) {
                 extension = DEFAULT_EXTENSION;
             }
             try (FileOutputStream out = new FileOutputStream(file)) {
@@ -210,12 +196,6 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
                     "Invalid file format",
                     JOptionPane.ERROR_MESSAGE);
         }
-
-
-    }
-
-    public void onExit() {
-
     }
 
     public void onSelect() {
@@ -321,8 +301,6 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
 
     @Override
     public void onFilterApplied(BufferedImage image) {
-//        todo: ask which way to do this
-//        imagesPanel.setFilteredImage(image);
         SwingUtilities.invokeLater(() -> imagesPanel.setFilteredImage(image));
     }
 
@@ -352,8 +330,14 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
         }
     }
 
+    public void onAbout() {
+        JOptionPane.showMessageDialog(this,
+                ABOUT,
+                "About " + TITLE,
+                JOptionPane.INFORMATION_MESSAGE);
+    }
+
     public void setAbleToSave(boolean ableToSave) {
-        this.ableToSave = ableToSave;
         manager.setSaveEnabled(ableToSave);
         manager.setCopyToLeftEnabled(ableToSave);
     }

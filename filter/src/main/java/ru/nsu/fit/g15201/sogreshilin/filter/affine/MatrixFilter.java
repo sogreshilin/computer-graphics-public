@@ -49,7 +49,6 @@ public class MatrixFilter implements Filter {
 
         for (int x = 0; x < width; ++x) {
             for (int y = 0; y < height; ++y) {
-                int[] components = new int[] {0, 0, 0};
                 int red = 0;
                 int green = 0;
                 int blue = 0;
