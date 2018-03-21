@@ -23,7 +23,7 @@ public class ColorUtils {
         return (image.getRGB(x, y) >> (componentIndex * 8)) & 0xFF;
     }
 
-    public static int cut(int value) {
+    public static int truncate(int value) {
         if (value < 0) {
             return 0;
         }

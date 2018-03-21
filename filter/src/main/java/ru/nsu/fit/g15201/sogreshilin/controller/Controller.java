@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.imageio.ImageIO;
@@ -17,6 +18,8 @@ import ru.nsu.fit.g15201.sogreshilin.filter.*;
 import ru.nsu.fit.g15201.sogreshilin.filter.affine.*;
 import ru.nsu.fit.g15201.sogreshilin.filter.dither.*;
 import ru.nsu.fit.g15201.sogreshilin.filter.edge.*;
+import ru.nsu.fit.g15201.sogreshilin.rendering.Config;
+import ru.nsu.fit.g15201.sogreshilin.rendering.VolumeRendering;
 import ru.nsu.fit.g15201.sogreshilin.view.*;
 import ru.nsu.fit.g15201.sogreshilin.view.dialog.*;
 import ru.nsu.fit.g15201.sogreshilin.view.toolbar.*;
@@ -29,14 +32,21 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
     private static final int HEIGHT = 600;
 
     private static final String TITLE = "Filters";
-    private static final java.util.List<String> EXTENSIONS = Arrays.asList("bmp", "png");
+    private static final java.util.List<String> EXTENSIONS = List.of("bmp", "png");
+    private static final String DEFAULT_EXTENSION = "png";
     private final ImagesPanel imagesPanel;
     private final JScrollPane scrollPane;
     private MenuToolbarManager manager;
     private File currentFile = null;
+    private boolean filtersEnabled = false;
+    private boolean volumeEnabled = false;
+    private boolean emissionEnabled = false;
+    private boolean absorptionEnabled = false;
 
     private BufferedImage imageBeforeFilter;
-    private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private Config config;
+    private boolean ableToSave = false;
 
     private Controller() {
         super(WIDTH, HEIGHT, TITLE);
@@ -45,6 +55,18 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
         setMinimumSize(new Dimension(MIN_WIDTH, MIN_HEIGHT));
         setupImagesPanel();
         setupToolbarMenuManager();
+        setupStatusBar();
+    }
+
+    private void setupStatusBar() {
+        JPanel statusBar = new JPanel(new GridLayout());
+        statusBar.setPreferredSize(new Dimension(this.getWidth(), 20));
+        add(statusBar, BorderLayout.SOUTH);
+        JLabel statusLabel = new JLabel(TITLE);
+        statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        statusLabel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0));
+        statusBar.add(statusLabel);
+        manager.setStatusLabelListeners(statusLabel);
     }
 
     private void setupImagesPanel() {
@@ -53,6 +75,7 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
         imagesPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
+                manager.setCopyToRightEnabled(true);
                 imagesPanel.drawSelectionRectangle(e.getX(), e.getY());
             }
         });
@@ -60,6 +83,7 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
         imagesPanel.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
+                manager.setCopyToRightEnabled(true);
                 imagesPanel.drawSelectionRectangle(e.getX(), e.getY());
             }
         });
@@ -69,15 +93,48 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
         manager = new MenuToolbarManager(this);
         manager.setupMenu();
         manager.setupToolbar();
+        manager.setSaveEnabled(false);
         manager.setSelectEnabled(false);
+        manager.setCopyToLeftEnabled(false);
+        manager.setCopyToRightEnabled(false);
+        manager.setFiltersEnabled(false);
+        manager.setVolumeEnabled(false);
     }
 
     public static void main(String[] args) {
         Controller controller = new Controller();
         controller.setVisible(true);
+//        BufferedImage testImage = new BufferedImage(350, 350, BufferedImage.TYPE_INT_ARGB);
+//        int[] color = new int[] {Color.WHITE.getRGB(), Color.red.getRGB(), Color.green.getRGB(), Color.blue.getRGB()};
+//        for (int i = 0; i < 350; ++i) {
+//            for (int j = 0; j < 350; ++j) {
+//                testImage.setRGB(i, j, color[(i + j) % 4]);
+//            }
+//        }
+//        try {
+//            new Controller().save(testImage, "testImage.png", "png");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
     }
 
     public void onNew() {
+        filtersEnabled = false;
+        volumeEnabled = false;
+        emissionEnabled = false;
+        absorptionEnabled = false;
+        imageBeforeFilter = null;
+        manager.clear();
+        imagesPanel.setFilteredImage(null);
+        imagesPanel.clearAll();
+    }
+
+    public MenuToolbarManager getManager() {
+        return manager;
+    }
+
+    public void onOpen() {
         File file = FileUtils.getOpenFileName(this, EXTENSIONS, "Image");
         setCurrentFile(file);
         if (file == null) {
@@ -85,7 +142,7 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
         }
 
         try (FileInputStream in = new FileInputStream(currentFile)) {
-            BufferedImage image = ImageIO.read(in);
+            Image image = ImageIO.read(in);
             if (image != null) {
                 imagesPanel.setImage(image);
             } else {
@@ -103,10 +160,6 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
 
     }
 
-    public void onOpen() {
-
-    }
-
     private void setCurrentFile(File currentFile) {
         this.currentFile = currentFile;
         String filename = "Untitled";
@@ -118,13 +171,18 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
     }
 
     public void onSave() {
-        if (currentFile == null) {
+        BufferedImage filteredImage = imagesPanel.getFilteredImage();
+        if (filteredImage != null) {
             File file = FileUtils.getSaveFileName(this, EXTENSIONS, "Image file");
-            setCurrentFile(file);
-        }
-        if (currentFile != null) {
-            try (FileOutputStream out = new FileOutputStream(currentFile)) {
-//            todo : add file saving
+            if (file == null) {
+                return;
+            }
+            String extension = FileUtils.getExtension(file);
+            if (extension == "") {
+                extension = DEFAULT_EXTENSION;
+            }
+            try (FileOutputStream out = new FileOutputStream(file)) {
+                ImageIO.write(filteredImage, extension, out);
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(this,
                         "File cannot be saved",
@@ -132,6 +190,28 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
                         JOptionPane.ERROR_MESSAGE);
             }
         }
+    }
+
+    public void onConfigOpen() {
+        File file = FileUtils.getOpenFileName(this, List.of("txt"), "Config");
+        if (file == null) {
+            return;
+        }
+
+        try (FileInputStream in = new FileInputStream(file)) {
+            config = new Config();
+            config.readConfigFromFile(in);
+            imagesPanel.drawGraphs(config);
+            volumeEnabled = true;
+            manager.setVolumeEnabled(filtersEnabled);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Invalid file format.\nFile cannot be read",
+                    "Invalid file format",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+
     }
 
     public void onExit() {
@@ -150,11 +230,11 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
     }
 
     public void onCopyToLeft() {
-//        todo : copy to left
+        imagesPanel.copySelectedToFiltered();
     }
 
     public void onCopyToRight() {
-//        todo : copy to right
+        imagesPanel.copyFilteredToSelected();
     }
 
     public void onGrayscale() {
@@ -165,18 +245,22 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
         apply(new NegativeConversion(this));
     }
 
+    private void onDither(Dithering filter) {
+        imageBeforeFilter = imagesPanel.getFilteredImage();
+        new DitherDialog(this, filter).setVisible(true);
+    }
+
     public void onFloydSteinbergDither() {
         FloydSteinbergDithering filter = new FloydSteinbergDithering(this);
-        filter.setLevels(4, 4, 4);
-        apply(filter);
+        filter.setLevels(2, 2, 2);
+        onDither(filter);
     }
 
     public void onOrderDither() {
         OrderedDithering filter = new OrderedDithering(this);
-        filter.setLevels(16, 16, 16);
-//        todo : add this dialog menu
-//        new DitherDialog(this, filter).setVisible(true);
-        apply(filter);
+        filter.setLevels(2, 2, 2);
+        filter.setMatrixSize(8);
+        onDither(filter);
     }
 
     public void onDoubleMagnification() {
@@ -231,10 +315,46 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
         executor.submit(() -> filter.apply(selectedImage));
     }
 
+    private void save(BufferedImage image, String filename, String extension) throws IOException {
+        ImageIO.write(image, extension, new File(filename));
+    }
+
     @Override
     public void onFilterApplied(BufferedImage image) {
 //        todo: ask which way to do this
 //        imagesPanel.setFilteredImage(image);
         SwingUtilities.invokeLater(() -> imagesPanel.setFilteredImage(image));
+    }
+
+    public void setFiltersEnabled(boolean value) {
+        if (value != filtersEnabled) {
+            filtersEnabled = value;
+            manager.setFiltersEnabled(value);
+            manager.setVolumeEnabled(volumeEnabled);
+        }
+    }
+
+    public void onEmission() {
+        emissionEnabled = !emissionEnabled;
+    }
+
+    public void onAbsorption() {
+        absorptionEnabled = !absorptionEnabled;
+    }
+
+    public void onVolumeRender() {
+        if (config != null) {
+            imageBeforeFilter = imagesPanel.getFilteredImage();
+            VolumeRendering filter = new VolumeRendering(this, config);
+            filter.setAbsorptionEnabled(absorptionEnabled);
+            filter.setEmissionEnabled(emissionEnabled);
+            new VolumeRenderingDialog(this, filter).setVisible(true);
+        }
+    }
+
+    public void setAbleToSave(boolean ableToSave) {
+        this.ableToSave = ableToSave;
+        manager.setSaveEnabled(ableToSave);
+        manager.setCopyToLeftEnabled(ableToSave);
     }
 }

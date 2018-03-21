@@ -93,7 +93,7 @@ public class SobelEdgeDetection implements EdgeDetection {
         }
         for (int k = 0; k < 3; ++k) {
             sum[k] /= 4;
-            sum[k] = ColorUtils.cut(sum[k]);
+            sum[k] = ColorUtils.truncate(sum[k]);
         }
         return new Color(sum[2], sum[1], sum[0]).getRGB();
     }

@@ -16,6 +16,7 @@ public class LabeledSliderWithTextField extends JPanel {
 
     public LabeledSliderWithTextField(String labelText, int min, int max, int spacing) {
         setLayout(new GridBagLayout());
+        setBorder(BorderFactory.createEmptyBorder(0, 6, 0, 0));
         GridBagConstraints constraints = new GridBagConstraints();
 
         JLabel label = new JLabel(labelText);

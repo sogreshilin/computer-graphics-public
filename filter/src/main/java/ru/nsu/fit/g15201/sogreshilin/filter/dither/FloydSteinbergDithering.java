@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import ru.nsu.fit.g15201.sogreshilin.controller.FilterAppliedObserver;
 import ru.nsu.fit.g15201.sogreshilin.filter.ColorUtils;
-import ru.nsu.fit.g15201.sogreshilin.filter.Filter;
 
 import static java.lang.Math.round;
 
@@ -63,9 +62,9 @@ public class FloydSteinbergDithering implements Dithering {
                 int g = ((rgb >> 8) & 0xFF)  + errors[i][j][1];
                 int b = (rgb & 0xFF) + errors[i][j][0];
 
-                int rNew = redPalette[ColorUtils.cut(r)];
-                int gNew = greenPalette[ColorUtils.cut(g)];
-                int bNew = bluePalette[ColorUtils.cut(b)];
+                int rNew = redPalette[ColorUtils.truncate(r)];
+                int gNew = greenPalette[ColorUtils.truncate(g)];
+                int bNew = bluePalette[ColorUtils.truncate(b)];
 
                 Color destination = new Color(rNew, gNew, bNew);
                 filteredImage.setRGB(i, j, destination.getRGB());
@@ -82,8 +81,8 @@ public class FloydSteinbergDithering implements Dithering {
     }
 
     private void spreadError(int[][][] errors, int x, int y, int rError, int gError, int bError) {
-        int width = errors[0].length;
-        int height = errors.length;
+        int height = errors[0].length;
+        int width = errors.length;
 
         int xLeft = x == 0 ? x + 1 : x - 1;
         int xRight = x == width - 1 ? width - 2 : x + 1;

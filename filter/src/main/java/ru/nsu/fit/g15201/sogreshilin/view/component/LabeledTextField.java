@@ -14,11 +14,13 @@ public class LabeledTextField extends JPanel {
     private int value;
 
     public LabeledTextField(String name, int value) {
-        setLayout( new GridLayout(2, 1));
+        setLayout(new GridLayout(2, 1));
         JLabel label = new JLabel(name);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
         textField = new JTextField(String.valueOf(value));
         add(label);
         add(textField);
+        this.value = value;
 
         textField.addKeyListener(new KeyAdapter() {
             @Override
@@ -30,15 +32,16 @@ public class LabeledTextField extends JPanel {
                 }
                 try {
                     int val = Integer.parseInt(text);
-                    if (0 <= val) {
+                    if (2 <= val && val <= 256) {
                         notifyValueChanged(val);
                         textField.setForeground(Color.black);
                     } else {
-                        throw new NumberFormatException();
+                        textField.setForeground(Color.red);
+//                        notifyValueChanged(-1);
                     }
                 } catch (NumberFormatException ex) {
                     textField.setForeground(Color.red);
-                    notifyValueChanged(-1);
+//                    notifyValueChanged(-1);
                 }
             }
         });

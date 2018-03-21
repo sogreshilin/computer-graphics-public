@@ -27,6 +27,7 @@ public class FileUtils {
 
     public static File getSaveFileName(JFrame parent, List<String> extensions, String description) {
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setAcceptAllFileFilterUsed(false);
         for (String extension: extensions) {
             FileFilter filter = new ExtensionFileFilter(extension, description);
             fileChooser.addChoosableFileFilter(filter);
@@ -57,5 +58,14 @@ public class FileUtils {
             return f;
         }
         return null;
+    }
+
+    public static String getExtension(File file) {
+        String name = file.getName();
+        try {
+            return name.substring(name.lastIndexOf(".") + 1);
+        } catch (Exception e) {
+            return "";
+        }
     }
 }

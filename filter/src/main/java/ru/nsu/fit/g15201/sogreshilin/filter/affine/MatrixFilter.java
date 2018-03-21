@@ -63,9 +63,9 @@ public class MatrixFilter implements Filter {
                     }
                 }
 
-                red = cut((int) round(red * coefficient) + bias);
-                green = cut((int) round(green * coefficient) + bias);
-                blue = cut((int) round(blue * coefficient) + bias);
+                red = truncate((int) round(red * coefficient) + bias);
+                green = truncate((int) round(green * coefficient) + bias);
+                blue = truncate((int) round(blue * coefficient) + bias);
 
                 filteredImage.setRGB(x, y, new Color(red, green, blue).getRGB());
             }

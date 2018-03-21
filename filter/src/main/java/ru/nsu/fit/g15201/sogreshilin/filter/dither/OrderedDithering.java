@@ -2,6 +2,8 @@ package ru.nsu.fit.g15201.sogreshilin.filter.dither;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import ru.nsu.fit.g15201.sogreshilin.controller.FilterAppliedObserver;
 import ru.nsu.fit.g15201.sogreshilin.filter.Filter;
 
@@ -37,9 +39,17 @@ public class OrderedDithering implements Dithering {
         redPalette = buildPalette(redLevels);
         greenPalette = buildPalette(greenLevels);
         bluePalette = buildPalette(blueLevels);
+        System.out.println("Levels set");
+        Arrays.stream(redPalette).forEach(e -> System.out.print(e + " "));
+        System.out.println();
+        Arrays.stream(greenPalette).forEach(e -> System.out.print(e + " "));
+        System.out.println();
+        Arrays.stream(bluePalette).forEach(e -> System.out.print(e + " "));
+        System.out.println();
     }
 
     public void setMatrixSize(int size) {
+        System.out.println("setMatrixSize(" + size + ")");
         if (size <= 0) {
             throw new IllegalArgumentException("Ordered dithering matrix size " +
                     "has to be a positive number");
@@ -84,6 +94,7 @@ public class OrderedDithering implements Dithering {
 
     @Override
     public BufferedImage apply(BufferedImage image) {
+        System.out.println("In filter apply");
         int width = image.getWidth();
         int height = image.getHeight();
         BufferedImage filteredImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -119,7 +130,9 @@ public class OrderedDithering implements Dithering {
             }
         }
         observer.onFilterApplied(filteredImage);
+        System.out.println("Filter applied");
         return filteredImage;
+
     }
 
     private int previousColorFromPalette(int r, int[] palette) {

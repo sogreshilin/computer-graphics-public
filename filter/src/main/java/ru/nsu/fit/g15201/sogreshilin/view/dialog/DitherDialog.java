@@ -1,18 +1,16 @@
 package ru.nsu.fit.g15201.sogreshilin.view.dialog;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import ru.nsu.fit.g15201.sogreshilin.controller.Controller;
 import ru.nsu.fit.g15201.sogreshilin.filter.dither.Dithering;
-import ru.nsu.fit.g15201.sogreshilin.filter.edge.EdgeDetection;
-import ru.nsu.fit.g15201.sogreshilin.view.component.LabeledSliderWithTextField;
+import ru.nsu.fit.g15201.sogreshilin.filter.dither.OrderedDithering;
 import ru.nsu.fit.g15201.sogreshilin.view.component.LabeledTextField;
 import ru.nsu.fit.g15201.sogreshilin.view.component.OkCancelButtonPanel;
 
-public class DitherDialog extends JFrame {
+public class DitherDialog extends JDialog {
     private final Controller controller;
     private final Dithering filter;
     private JCheckBox online;
@@ -21,35 +19,56 @@ public class DitherDialog extends JFrame {
     private final LabeledTextField blueLevels;
 
     public DitherDialog(Controller controller, Dithering filter) {
-        super("Dither parameters");
         this.controller = controller;
         this.filter = filter;
-        setLayout(new GridLayout(2, 1));
+        setModal(true);
+        setLayout(new BorderLayout());
+
+        JPanel controlPanel = new JPanel(new BorderLayout());
 
         JPanel paletteLevels = new JPanel(new GridLayout(1, 3));
-        redLevels = new LabeledTextField("Red levels", 2);
-        greenLevels = new LabeledTextField("Green levels", 2);
-        blueLevels = new LabeledTextField("Blue levels", 2);
+        redLevels = new LabeledTextField("Red", 2);
+        greenLevels = new LabeledTextField("Green", 2);
+        blueLevels = new LabeledTextField("Blue", 2);
+        setObservers();
+
         paletteLevels.add(redLevels);
         paletteLevels.add(greenLevels);
         paletteLevels.add(blueLevels);
-        add(paletteLevels);
+        paletteLevels.setBorder(BorderFactory.createTitledBorder("Gradations"));
+        controlPanel.add(paletteLevels, BorderLayout.CENTER);
+        add(controlPanel, BorderLayout.CENTER);
 
         JPanel checkBoxPanel = createCheckBoxPanel();
         JPanel buttonPanel = createButtonPanel();
         JPanel southPanel = new JPanel(new GridLayout(2, 1));
         southPanel.add(checkBoxPanel);
         southPanel.add(buttonPanel);
-        add(southPanel);
+        add(southPanel, BorderLayout.SOUTH);
 
-        add(buttonPanel);
-
-
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                controller.onCancel();
+            }
+        });
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         pack();
         setMinimumSize(getSize());
         setLocationRelativeTo(controller);
         this.setResizable(true);
+    }
+
+    private void setObservers() {
+        LabeledTextField.ValueChangedObserver listener =
+                e -> onPaletteChanged(redLevels.getValue(),
+                        greenLevels.getValue(),
+                        blueLevels.getValue());
+
+        redLevels.addValueChangedObserver(listener);
+        greenLevels.addValueChangedObserver(listener);
+        blueLevels.addValueChangedObserver(listener);
     }
 
     private JPanel createCheckBoxPanel() {
@@ -95,7 +114,35 @@ public class DitherDialog extends JFrame {
     }
 
     private void apply(int redLevels, int greenLevels, int blueLevels) {
+        System.out.println(String.format("call setLevels(%d, %d, %d)", redLevels, greenLevels, blueLevels));
         filter.setLevels(redLevels, greenLevels, blueLevels);
         controller.apply(filter);
+    }
+
+    private void setUpOrderedDitheringMatrixSizeChooser(JPanel controlPanel) {
+        if (filter instanceof OrderedDithering) {
+            String[] items = new String[10];
+            for (int i = 0; i < 10; ++i) {
+                items[i] = String.valueOf(1 << (i + 1));
+            }
+            JComboBox matrixSizeComboBox = new JComboBox(items);
+            matrixSizeComboBox.setEditable(true);
+            controlPanel.add(matrixSizeComboBox, BorderLayout.SOUTH);
+            matrixSizeComboBox.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int i = matrixSizeComboBox.getSelectedIndex();
+                    System.out.println("selected index = " + i);
+                    ((OrderedDithering) filter).setMatrixSize(1 << (i + 1));
+                    controller.apply(filter);
+                }
+            });
+
+        }
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
     }
 }

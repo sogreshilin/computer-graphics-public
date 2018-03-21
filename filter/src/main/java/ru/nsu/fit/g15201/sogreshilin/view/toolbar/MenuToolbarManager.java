@@ -1,11 +1,9 @@
 package ru.nsu.fit.g15201.sogreshilin.view.toolbar;
 
+import java.awt.event.*;
 import ru.nsu.fit.g15201.sogreshilin.controller.Controller;
 
 import javax.swing.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,14 +50,12 @@ public class MenuToolbarManager {
             menuItems.put("Filter/Watercolor", controller.addMenuItem("Filter/Watercolor", "Watercolor", KeyEvent.VK_I, "watercolor.png", controller::onWatercolor));
             menuItems.put("Filter/Rotation", controller.addMenuItem("Filter/Rotation", "Rotation", KeyEvent.VK_I, "rotate.png", controller::onRotation));
             menuItems.put("Filter/Gamma Correction", controller.addMenuItem("Filter/Gamma Correction", "Gamma Correction", KeyEvent.VK_I, "gamma.png", controller::onGammaCorrection));
-//
-//            controller.addSubMenu("Simulation", KeyEvent.VK_H);
-//            menuItems.put("Simulation/Run", controller.addMenuItem("Simulation/Run", "Run the game", KeyEvent.VK_R, "run.png", "onRun"));
-//            menuItems.put("Simulation/Pause", controller.addMenuItem("Simulation/Pause", "Pause running game", KeyEvent.VK_S, "pause.png", "onPause"));
-//            menuItems.put("Simulation/Step", controller.addMenuItem("Simulation/Step", "Make one step", KeyEvent.VK_S, "step.png", "onStep"));
-//
-//            controller.addSubMenu("Help", KeyEvent.VK_H);
-//            menuItems.put("Help/About", controller.addMenuItem("Help/About", "Show program version and copyright information", KeyEvent.VK_A, "about.png", "onAbout"));
+
+            controller.addSubMenu("Volume", KeyEvent.VK_H);
+            menuItems.put("Volume/Open", controller.addMenuItem("Volume/Open", "Open config file", KeyEvent.VK_O, "open.png", controller::onConfigOpen));
+            menuItems.put("Volume/Absorption", controller.addMenuItem("Volume/Absorption", "Absorption", KeyEvent.VK_A, "absorption.png", controller::onAbsorption));
+            menuItems.put("Volume/Emission", controller.addMenuItem("Volume/Emission", "Emission", KeyEvent.VK_E, "emission.png", controller::onEmission));
+            menuItems.put("Volume/Render", controller.addMenuItem("Volume/Render", "Render volume", KeyEvent.VK_R, "volume.png", controller::onVolumeRender));
 
         } catch(Exception e) {
             throw new RuntimeException(e);
@@ -105,6 +101,12 @@ public class MenuToolbarManager {
             buttons.put("Filter/Sharpening", controller.addToolBarRegularButton("Filter/Sharpening"));
             buttons.put("Filter/Embossing", controller.addToolBarRegularButton("Filter/Embossing"));
 
+            controller.addToolBarSeparator();
+            buttons.put("Volume/Open", controller.addToolBarRegularButton("Volume/Open"));
+            buttons.put("Volume/Absorption", controller.addToolBarToggleButton("Volume/Absorption"));
+            buttons.put("Volume/Emission", controller.addToolBarToggleButton("Volume/Emission"));
+            buttons.put("Volume/Render", controller.addToolBarRegularButton("Volume/Render"));
+
 //            buttons.put("Edit/Settings", controller.addToolBarRegularButton("Edit/Settings"));
 //            controller.addToolBarSeparator();
 //
@@ -132,8 +134,38 @@ public class MenuToolbarManager {
         menuItems.get(key).setSelected(value);
     }
 
+    public void setFiltersEnabled(boolean value) {
+        setEnabled("Filter/Double", value);
+        setEnabled("Filter/Rotation", value);
+        setEnabled("Filter/Grayscale", value);
+        setEnabled("Filter/Invert", value);
+        setEnabled("Filter/Watercolor", value);
+        setEnabled("Filter/Gamma Correction", value);
+        setEnabled("Filter/Floyd-Steinberg Dither", value);
+        setEnabled("Filter/Ordered Dither", value);
+        setEnabled("Filter/Roberts Edge Detection", value);
+        setEnabled("Filter/Sobel Edge Detection", value);
+        setEnabled("Filter/Anti-Aliasing", value);
+        setEnabled("Filter/Sharpening", value);
+        setEnabled("Filter/Embossing", value);
+    }
+
+    public void setVolumeEnabled(boolean value) {
+        setEnabled("Volume/Absorption", value);
+        setEnabled("Volume/Emission", value);
+        setEnabled("Volume/Render", value);
+    }
+
     public void setSelectEnabled(boolean value) {
         setEnabled("Edit/Select", value);
+    }
+
+    public void setCopyToRightEnabled(boolean value) {
+        setEnabled("Edit/Copy B to C", value);
+    }
+
+    public void setCopyToLeftEnabled(boolean value) {
+        setEnabled("Edit/Copy C to B", value);
     }
 
     public void setStatusLabelListeners(JLabel statusLabel){
@@ -156,4 +188,26 @@ public class MenuToolbarManager {
     }
 
 
+    public void setSaveEnabled(boolean value) {
+        setEnabled("File/Save", value);
+    }
+
+    public void clear() {
+        setSelectEnabled(false);
+        setSelectSelected(false);
+        setCopyToLeftEnabled(false);
+        setCopyToRightEnabled(false);
+        setFiltersEnabled(false);
+        setVolumeEnabled(false);
+        if (buttons.get("Volume/Absorption").isSelected()) {
+            for (ActionListener actionListener : buttons.get("Volume/Absorption").getActionListeners()) {
+                actionListener.actionPerformed(null);
+            }
+        }
+        if (buttons.get("Volume/Emission").isSelected()) {
+            for (ActionListener actionListener : buttons.get("Volume/Emission").getActionListeners()) {
+                actionListener.actionPerformed(null);
+            }
+        }
+    }
 }

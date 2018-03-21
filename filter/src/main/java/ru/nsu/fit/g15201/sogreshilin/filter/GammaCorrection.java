@@ -43,7 +43,7 @@ public class GammaCorrection implements Filter {
     }
 
     private int correct(int color) {
-        return ColorUtils.cut((int) round(coefficient * pow(color, inverseGamma)));
+        return ColorUtils.truncate((int) round(coefficient * pow(color, inverseGamma)));
     }
 
     public void setGamma(double gamma) {

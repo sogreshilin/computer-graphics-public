@@ -3,6 +3,8 @@ package ru.nsu.fit.g15201.sogreshilin.view.dialog;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import ru.nsu.fit.g15201.sogreshilin.controller.Controller;
@@ -11,7 +13,7 @@ import ru.nsu.fit.g15201.sogreshilin.filter.edge.EdgeDetection;
 import ru.nsu.fit.g15201.sogreshilin.view.component.LabeledSliderWithTextField;
 import ru.nsu.fit.g15201.sogreshilin.view.component.OkCancelButtonPanel;
 
-public class EdgeThresholdDialog extends JFrame {
+public class EdgeThresholdDialog extends JDialog {
     private static final int SPACING = 1;
     private final Controller controller;
     private LabeledSliderWithTextField threshold;
@@ -21,7 +23,7 @@ public class EdgeThresholdDialog extends JFrame {
     private EdgeDetection filter;
 
     public EdgeThresholdDialog(Controller controller, EdgeDetection filter) {
-        super("Edge Threshold");
+        setModal(true);
         this.controller = controller;
         this.filter = filter;
         setLayout(new BorderLayout());
@@ -45,7 +47,13 @@ public class EdgeThresholdDialog extends JFrame {
         southPanel.add(buttonPanel);
         add(southPanel, BorderLayout.SOUTH);
 
-
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                controller.onCancel();
+            }
+        });
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         pack();
         setMinimumSize(getSize());
@@ -96,5 +104,10 @@ public class EdgeThresholdDialog extends JFrame {
         filter.setInverted(invert.isSelected());
         filter.setThreshold(value);
         controller.apply(filter);
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
     }
 }

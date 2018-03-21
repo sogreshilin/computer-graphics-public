@@ -36,7 +36,7 @@ public class RobertsEdgeDetection implements EdgeDetection {
                         );
                 }
                 for (int k = 0; k < 3; ++k) {
-                    components[k] = ColorUtils.cut(components[k]);
+                    components[k] = ColorUtils.truncate(components[k]);
                 }
                 int sum = Arrays.stream(components).sum();
 

@@ -1,47 +1,94 @@
 package ru.nsu.fit.g15201.sogreshilin.view.dialog;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import ru.nsu.fit.g15201.sogreshilin.controller.Controller;
 import ru.nsu.fit.g15201.sogreshilin.filter.GammaCorrection;
 import ru.nsu.fit.g15201.sogreshilin.view.component.LabeledSliderWithTextField;
 import ru.nsu.fit.g15201.sogreshilin.view.component.OkCancelButtonPanel;
+import static java.lang.Math.*;
 
-// todo : gamma coefficient should be double, not int
-public class GammaDialog extends JFrame {
+public class GammaDialog extends JDialog {
     private static final int SPACING = 1;
     private final Controller controller;
     private LabeledSliderWithTextField gamma;
     private JCheckBox online;
+    private JSlider slider;
+    private JTextField textField;
+    private int value;
+    private final int amplitude;
 
     private GammaCorrection filter;
 
     public GammaDialog(Controller controller, GammaCorrection filter) {
-        super("Gamma");
+        setModal(true);
         this.controller = controller;
         this.filter = filter;
         setLayout(new BorderLayout());
 
-        gamma = new LabeledSliderWithTextField(
-                "Gamma",
+        this.value = GammaCorrection.DEFAULT_GAMMA;
+        this.amplitude = (GammaCorrection.MAX_GAMMA - GammaCorrection.MIN_GAMMA);
+
+
+        JPanel controlPanel = new JPanel(new GridLayout(2, 1));
+        slider = new JSlider(
                 GammaCorrection.MIN_GAMMA,
-                GammaCorrection.MAX_GAMMA,
-                SPACING);
+                GammaCorrection.MAX_GAMMA);
+        slider.setValue(value);
+        slider.setSnapToTicks(true);
+        slider.setMajorTickSpacing(10);
+        slider.setMinorTickSpacing(5);
+        slider.setPaintTicks(true);
+        slider.addChangeListener(e -> {
+            value = slider.getValue();
+            onGammaChanged((double) value / amplitude * 10);
+            textField.setText(String.format("%.1f", (double) value / amplitude * 10));
+        });
 
-        gamma.setValue(GammaCorrection.DEFAULT_GAMMA);
-        gamma.addValueChangedObserver(this::onGammaChanged);
+        textField = new JTextField(String.format("%.1f", (double) value / amplitude * 10));
 
-        add(gamma, BorderLayout.CENTER);
+        textField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                textField.setForeground(Color.black);
+                String text = textField.getText();
+                try {
+                    double input = Double.parseDouble(text);
+                    int inputValue = (int) ((((double) round(input * 2)) / 2) * 10);
+                    if (inputValue > 100) {
+                        inputValue = 100;
+                    } else if (inputValue < 0) {
+                        inputValue = 0;
+                    }
+                    value = inputValue;
+                    textField.setText(String.format("%.1f", (double) value / amplitude * 10));
+                    slider.setValue(value);
+                } catch (NumberFormatException ex) {
+                    textField.setForeground(Color.red);
+                }
+            }
+        });
+
+        controlPanel.add(slider);
+        controlPanel.add(textField);
+
+        add(controlPanel, BorderLayout.CENTER);
+
         JPanel checkBoxPanel = createCheckBoxPanel();
         JPanel buttonPanel = createButtonPanel();
         JPanel southPanel = new JPanel(new GridLayout(2, 1));
         southPanel.add(checkBoxPanel);
         southPanel.add(buttonPanel);
         add(southPanel, BorderLayout.SOUTH);
-
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                controller.onCancel();
+            }
+        });
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         pack();
         setMinimumSize(getSize());
@@ -53,7 +100,7 @@ public class GammaDialog extends JFrame {
         JPanel checkBoxPanel = new JPanel(new GridLayout(1, 1));
         online = new JCheckBox("Enable preview", true);
 
-        ChangeListener listener = e -> onGammaChanged(gamma.getValue());
+        ChangeListener listener = e -> onGammaChanged((double) value / amplitude * 10);
         online.addChangeListener(listener);
 
         checkBoxPanel.add(online);
@@ -72,21 +119,26 @@ public class GammaDialog extends JFrame {
         buttonPanel.addOkButtonListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                apply(gamma.getValue());
+                apply((double) value / amplitude * 10);
                 dispose();
             }
         });
         return buttonPanel;
     }
 
-    private void onGammaChanged(int value) {
+    private void onGammaChanged(double value) {
         if (online.isSelected()) {
             apply(value);
         }
     }
 
-    private void apply(int value) {
+    private void apply(double value) {
         filter.setGamma(value);
         controller.apply(filter);
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
     }
 }
