@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.CheckMenuItem?>
+
+<VBox fx:id="root"
+      styleClass="root"
+      xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/8.0.121"
+      fx:controller="ru.nsu.fit.g15201.sogreshilin.controller.Controller">
+
+    <MenuBar fx:id="menuBar" useSystemMenuBar="true">
+        <Menu text="%file">
+            <MenuItem text="%open" onAction="#onOpen"/>
+            <MenuItem text="%parameters" onAction="#onParameters"/>
+            <SeparatorMenuItem/>
+            <MenuItem text="%exit" onAction="#onExit"/>
+        </Menu>
+
+        <Menu text="%view">
+            <CheckMenuItem text="%interpolation" onAction="#onInterpolation"/>
+            <CheckMenuItem text="%grid" onAction="#onGrid" selected="true"/>
+            <CheckMenuItem text="%colorMap" onAction="#onColorMap" selected="true"/>
+            <CheckMenuItem text="%contour" onAction="#onContourLine" selected="true"/>
+            <CheckMenuItem text="%controlPoint" onAction="#onControlPoints"/>
+        </Menu>
+
+        <Menu text="%action">
+            <CheckMenuItem text="%draw" onAction="#onDraw"/>
+            <MenuItem text="%erase" onAction="#onErase"/>
+        </Menu>
+
+        <Menu text="%help">
+            <MenuItem text="%about" onAction="#onAbout"/>
+        </Menu>
+    </MenuBar>
+
+    <BorderPane fx:id="pane">
+
+        <top>
+            <ToolBar fx:id="toolBar">
+                <Separator/>
+                <Button fx:id="open" text="%open" onAction="#onOpen">
+                    <tooltip><Tooltip text="%tooltip_open"/></tooltip>
+                </Button>
+                <Button fx:id="parameters" text="%parameters" onAction="#onParameters">
+                    <tooltip><Tooltip text="%tooltip_parameters"/></tooltip>
+                </Button>
+
+                <Separator/>
+                <ToggleButton fx:id="interpolation" text="%interpolation" onAction="#onInterpolation">
+                    <tooltip><Tooltip text="%tooltip_interpolation"/></tooltip>
+                </ToggleButton>
+                <ToggleButton fx:id="grid" text="%grid" selected="true" onAction="#onGrid">
+                    <tooltip><Tooltip text="%tooltip_grid"/></tooltip>
+                </ToggleButton>
+                <ToggleButton fx:id="colorMap" text="%colorMap" selected="true" onAction="#onColorMap">
+                    <tooltip><Tooltip text="%tooltip_colorMap"/></tooltip>
+                </ToggleButton>
+                <ToggleButton fx:id="contour" text="%contour" selected="true" onAction="#onContourLine">
+                    <tooltip><Tooltip text="%tooltip_contour"/></tooltip>
+                </ToggleButton>
+                <ToggleButton fx:id="controlPoint" text="%controlPoint" onAction="#onControlPoints">
+                    <tooltip><Tooltip text="%tooltip_controlPoint"/></tooltip>
+                </ToggleButton>
+
+                <Separator/>
+                <ToggleButton fx:id="draw" text="%draw" onAction="#onDraw">
+                    <tooltip><Tooltip text="%tooltip_draw"/></tooltip>
+                </ToggleButton>
+                <Button fx:id="erase" text="%erase" onAction="#onErase">
+                    <tooltip><Tooltip text="%tooltip_erase"/></tooltip>
+                </Button>
+
+                <Separator/>
+                <Button fx:id="about" text="%about" onAction="#onAbout">
+                    <tooltip><Tooltip text="%tooltip_about"/></tooltip>
+                </Button>
+
+                <Separator/>
+            </ToolBar>
+        </top>
+
+    </BorderPane>
+
+</VBox>
