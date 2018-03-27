@@ -9,8 +9,8 @@ class Coordinates(var width : Double, var height : Double) {
         const val INITIAL_HEIGHT = 300.0 - 39.0
     }
 
-    var gridXCount = 10
-    var gridYCount = 10
+    var gridXCount : Int = 0
+    var gridYCount : Int = 0
 
     private val padding = 10.0
     private val graphicsWeight = 0.8
@@ -55,6 +55,16 @@ class Coordinates(var width : Double, var height : Double) {
     val legendY0 : Double
         get() {
             return graphicsY0
+        }
+
+    val legendX1 : Double
+        get() {
+            return legendX0 + legendWidth
+        }
+
+    val legendY1 : Double
+        get() {
+            return legendY0 + legendHeight
         }
 
     val legendWidth : Double

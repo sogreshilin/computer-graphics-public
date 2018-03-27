@@ -13,11 +13,13 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.CheckMenuItem?>
 
-<VBox fx:id="root"
-      styleClass="root"
-      xmlns:fx="http://javafx.com/fxml/1"
-      xmlns="http://javafx.com/javafx/8.0.121"
-      fx:controller="ru.nsu.fit.g15201.sogreshilin.controller.Controller">
+<?import javafx.scene.control.Label?>
+<?import javafx.geometry.Insets?>
+<BorderPane fx:id="root"
+            styleClass="root"
+            xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/8.0.121"
+            fx:controller="ru.nsu.fit.g15201.sogreshilin.controller.Controller">
 
     <MenuBar fx:id="menuBar" useSystemMenuBar="true">
         <Menu text="%file">
@@ -28,15 +30,15 @@
         </Menu>
 
         <Menu text="%view">
-            <CheckMenuItem text="%interpolation" onAction="#onInterpolation"/>
-            <CheckMenuItem text="%grid" onAction="#onGrid" selected="true"/>
-            <CheckMenuItem text="%colorMap" onAction="#onColorMap" selected="true"/>
-            <CheckMenuItem text="%contour" onAction="#onContourLine" selected="true"/>
-            <CheckMenuItem text="%controlPoint" onAction="#onControlPoints"/>
+            <CheckMenuItem fx:id="interpolationMenuItem" text="%interpolation" onAction="#onInterpolation"/>
+            <CheckMenuItem fx:id="gridMenuItem" text="%grid" onAction="#onGrid" selected="true"/>
+            <CheckMenuItem fx:id="colorMapMenuItem" text="%colorMap" onAction="#onColorMap" selected="true"/>
+            <CheckMenuItem fx:id="contourMenuItem" text="%contour" onAction="#onContourLine" selected="true"/>
+            <CheckMenuItem fx:id="controlPointMenuItem" text="%controlPoint" onAction="#onControlPoints"/>
         </Menu>
 
         <Menu text="%action">
-            <CheckMenuItem text="%draw" onAction="#onDraw"/>
+            <CheckMenuItem fx:id="drawMenuItem" text="%draw" selected="true" onAction="#onDraw"/>
             <MenuItem text="%erase" onAction="#onErase"/>
         </Menu>
 
@@ -58,24 +60,24 @@
                 </Button>
 
                 <Separator/>
-                <ToggleButton fx:id="interpolation" text="%interpolation" onAction="#onInterpolation">
+                <ToggleButton fx:id="interpolationButton" text="%interpolation" onAction="#onInterpolation">
                     <tooltip><Tooltip text="%tooltip_interpolation"/></tooltip>
                 </ToggleButton>
-                <ToggleButton fx:id="grid" text="%grid" selected="true" onAction="#onGrid">
+                <ToggleButton fx:id="gridButton" text="%grid" selected="true" onAction="#onGrid">
                     <tooltip><Tooltip text="%tooltip_grid"/></tooltip>
                 </ToggleButton>
-                <ToggleButton fx:id="colorMap" text="%colorMap" selected="true" onAction="#onColorMap">
+                <ToggleButton fx:id="colorMapButton" text="%colorMap" selected="true" onAction="#onColorMap">
                     <tooltip><Tooltip text="%tooltip_colorMap"/></tooltip>
                 </ToggleButton>
-                <ToggleButton fx:id="contour" text="%contour" selected="true" onAction="#onContourLine">
+                <ToggleButton fx:id="contourButton" text="%contour" selected="true" onAction="#onContourLine">
                     <tooltip><Tooltip text="%tooltip_contour"/></tooltip>
                 </ToggleButton>
-                <ToggleButton fx:id="controlPoint" text="%controlPoint" onAction="#onControlPoints">
+                <ToggleButton fx:id="controlPointButton" text="%controlPoint" onAction="#onControlPoints">
                     <tooltip><Tooltip text="%tooltip_controlPoint"/></tooltip>
                 </ToggleButton>
 
                 <Separator/>
-                <ToggleButton fx:id="draw" text="%draw" onAction="#onDraw">
+                <ToggleButton fx:id="drawButton" text="%draw" selected="true" onAction="#onDraw">
                     <tooltip><Tooltip text="%tooltip_draw"/></tooltip>
                 </ToggleButton>
                 <Button fx:id="erase" text="%erase" onAction="#onErase">
@@ -91,6 +93,13 @@
             </ToolBar>
         </top>
 
+
     </BorderPane>
 
-</VBox>
+    <bottom>
+        <Label fx:id="status">
+            <padding><Insets left="10"/></padding>
+        </Label>
+    </bottom>
+
+</BorderPane>
