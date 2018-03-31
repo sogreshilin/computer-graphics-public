@@ -10,6 +10,7 @@ Available features:
 - ```Show/Hide control points```
 - ```Erase user defined isolines```
 - ```Set custom domain and grid size```
+- ```Draggable isoline```
 
 ## Two-variable function
 
@@ -21,7 +22,6 @@ Two variable function description can be found in [this](src/ru/nsu/fit/g15201/s
 C-style comments and whitespaces can be used in config file. Config file has following format:
 
 ```$xslt
-
 // grid size
 width height
  

@@ -8,11 +8,7 @@ import static java.lang.Math.*;
 public class DiscreteFunction {
     public static class ContinuousFunction {
         static double valueAt(double x, double y) {
-//            return x * x + y * y;
             return -(y - 0.5) * abs(sin(3 * atan((y - 0.5) / (x - 0.5))));
-//            return x * x * x * x - x * x + y * y;
-//            return cos(x) * sin(y);
-//            return x * x / 2 - y * y / 2;
         }
     }
 
