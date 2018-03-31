@@ -6,6 +6,13 @@ public class Segment {
     private double x2;
     private double y2;
 
+    public Segment(Point point1, Point point2) {
+        this.x1 = point1.getX();
+        this.y1 = point1.getY();
+        this.x2 = point2.getX();
+        this.y2 = point2.getY();
+    }
+
     public Segment(double x1, double y1, double x2, double y2) {
         this.x1 = x1;
         this.y1 = y1;

@@ -55,7 +55,7 @@
                 <Button fx:id="open" text="%open" onAction="#onOpen">
                     <tooltip><Tooltip text="%tooltip_open"/></tooltip>
                 </Button>
-                <Button fx:id="parameters" text="%parameters" onAction="#onParameters">
+                <Button text="%parameters" onAction="#onParameters">
                     <tooltip><Tooltip text="%tooltip_parameters"/></tooltip>
                 </Button>
 

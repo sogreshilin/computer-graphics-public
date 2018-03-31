@@ -1,6 +1,8 @@
 package ru.nsu.fit.g15201.sogreshilin.model;
 
 public class Domain {
+    public static final Domain DEFAULT_DOMAIN =
+            new Domain(-2*Math.PI, 2*Math.PI, -2*Math.PI, 2*Math.PI);
     private double x1;
     private double x2;
     private double y1;

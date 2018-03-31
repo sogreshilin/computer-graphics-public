@@ -2,27 +2,19 @@ package ru.nsu.fit.g15201.sogreshilin.controller
 
 import javafx.scene.paint.Color
 import ru.nsu.fit.g15201.sogreshilin.model.Domain
-import java.io.BufferedReader
-import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
 
 class Config {
-    var grid = Pair(10, 10)
+    var grid = Pair(100, 100)
     var colors : List<Color> = listOf(
-            Color.rgb( 87, 120, 177),
-            Color.rgb( 93, 130, 182),
-            Color.rgb(100, 139, 187),
-            Color.rgb(106, 149, 193),
-            Color.rgb(113, 159, 198),
-            Color.rgb(119, 169, 203),
-            Color.rgb(126, 179, 208),
-            Color.rgb(132, 188, 213),
-            Color.rgb(138, 198, 218),
-            Color.rgb(145, 208, 224),
-            Color.rgb(151, 218, 229),
-            Color.rgb(158, 227, 234),
-            Color.rgb(164, 237, 239))
+            Color.rgb(255,0,0),
+            Color.rgb(255,127,0),
+            Color.rgb(255, 255, 0),
+            Color.rgb(0, 255, 0),
+            Color.rgb(0, 0, 255),
+            Color.rgb(75, 0, 130),
+            Color.rgb(143, 0, 255))
     var keyValueCount : Int = colors.size - 1
     var contourColor = Color.BLACK!!
 
@@ -51,10 +43,14 @@ class Config {
 
     private fun readColor(line : String): Color {
         val strings  = line.split(" ")
-        val red   = Integer.parseInt(strings[0])
-        val green = Integer.parseInt(strings[1])
-        val blue  = Integer.parseInt(strings[2])
-        return Color.rgb(red, green, blue)
+        try {
+            val red = Integer.parseInt(strings[0])
+            val green = Integer.parseInt(strings[1])
+            val blue = Integer.parseInt(strings[2])
+            return Color.rgb(red, green, blue)
+        } catch (exception : NumberFormatException) {
+            throw IOException(exception)
+        }
     }
 
     private fun readColors(lines : List<String>) : List<Color> {
@@ -62,14 +58,22 @@ class Config {
     }
 
     private fun readKeyValueCount(line : String) : Int {
-        return Integer.parseInt(line)
+        try {
+            return Integer.parseInt(line)
+        } catch (exception : NumberFormatException) {
+            throw IOException(exception)
+        }
     }
 
     private fun readGrid(line : String) : Pair<Int, Int> {
         val strings = line.split(" ")
-        val xGridSize = Integer.parseInt(strings[0])
-        val yGridSize = Integer.parseInt(strings[1])
-        return Pair(xGridSize, yGridSize)
+        try {
+            val xGridSize = Integer.parseInt(strings[0])
+            val yGridSize = Integer.parseInt(strings[1])
+            return Pair(xGridSize, yGridSize)
+        } catch (exception : NumberFormatException) {
+            throw IOException(exception)
+        }
     }
 
     private fun removeComments(lines: List<String>): List<String> {

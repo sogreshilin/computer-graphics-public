@@ -9,38 +9,42 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import ru.nsu.fit.g15201.sogreshilin.controller.Controller;
 
-public class Main extends Application {
+public class ContourLines extends Application {
+    public static final int DEFAULT_WIDTH = 800;
+    public static final int DEFAULT_HEIGHT = 600;
+    private static final int MIN_WIDTH = 300;
+    private static final int MIN_HEIGHT = 300;
+    public static final Locale LOCALE = new Locale("en");
+    private static final String TITLE = "Countour lines";
+    public static final String PATH_TO_BUNDLE =
+            "ru.nsu.fit.g15201.sogreshilin.bundles.Strings";
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        primaryStage.setTitle(TITLE);
+
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setResources(ResourceBundle.getBundle("ru.nsu.fit.g15201.sogreshilin.bundles.Strings", new Locale("en")));
+        fxmlLoader.setResources(ResourceBundle.getBundle(PATH_TO_BUNDLE, LOCALE));
         BorderPane root = fxmlLoader.load(getClass().getResource("view/fxml/main-window.fxml").openStream());
-        primaryStage.setTitle("Countour lines");
-        Scene scene = new Scene(root, 800, 600);
+
+        Scene scene = new Scene(root);
         primaryStage.setScene(scene);
+
         Controller controller = fxmlLoader.getController();
         controller.setStage(primaryStage);
         scene.widthProperty().addListener((observable, oldValue, newValue) -> controller.redrawCanvas());
         scene.heightProperty().addListener((observable, oldValue, newValue) -> controller.redrawCanvas());
+
+        primaryStage.setMinWidth(MIN_WIDTH);
+        primaryStage.setMinHeight(MIN_HEIGHT);
+        primaryStage.setWidth(DEFAULT_WIDTH);
+        primaryStage.setHeight(DEFAULT_HEIGHT);
+
         controller.bindCanvasProperties();
-        controller.redrawCanvas();
         primaryStage.show();
     }
 
     public static void main(String[] args) {
         launch(args);
-//        ContinuousFunction f = new ContinuousFunction(new Domain(new Pair<>(-10.0, 10.0), new Pair<>(-6.0, 6.0)));
-//        f.setGrid(new Pair<>(20, 12));
-//        System.out.println(f.getValues());
-//        f.isoline(1.66);
-
-//        List.of(0x5778b1, 0x5d82b6, 0x648bbb, 0x6a95c1, 0x719fc6, 0x77a9cb, 0x7eb3d0, 0x84bcd5, 0x8ac6da, 0x91d0e0, 0x97dae5, 0x9ee3ea, 0xa4edef).forEach(element -> System.out.println(
-//                        ((element >> 16) & 0xFF) + " " +
-//                        ((element >> 8) & 0xFF) + " " +
-//                        ((element) & 0xFF)
-//            ));
-
-
     }
 }

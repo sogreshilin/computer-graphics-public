@@ -21,24 +21,8 @@ public class Translator {
         return (x - toLeft) / (toRight - toLeft) * (fromRight - fromLeft) + fromLeft;
     }
 
-    public void setFromLeft(double fromLeft) {
-        this.fromLeft = fromLeft;
-    }
-
-    public void setFromRight(double fromRight) {
-        this.fromRight = fromRight;
-    }
-
-    public void setToLeft(double toLeft) {
-        this.toLeft = toLeft;
-    }
-
-    public void setToRight(double toRight) {
-        this.toRight = toRight;
-    }
-
     @Override
     public String toString() {
-        return String.format("[%.2f, %.2f]*[%.2f, %.2f]", fromLeft, fromRight, toLeft, toRight);
+        return String.format("[%.2f, %.2f]->[%.2f, %.2f]", fromLeft, fromRight, toLeft, toRight);
     }
 }
