@@ -422,7 +422,7 @@ public class GraphicsCanvas extends Canvas {
     private void drawGrid(GraphicsContext context) {
         context.setStroke(Color.WHITE);
         context.setLineWidth(1);
-        context.setLineDashes(5);
+        context.setLineDashes(1, 5);
         context.setLineJoin(StrokeLineJoin.ROUND);
 
         BlendMode mode = context.getGlobalBlendMode();

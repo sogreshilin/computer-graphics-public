@@ -6,7 +6,7 @@ import java.io.IOException
 import java.io.InputStream
 
 class Config {
-    var grid = Pair(100, 100)
+    var grid = Pair(30, 30)
     var colors : List<Color> = listOf(
             Color.rgb(255,0,0),
             Color.rgb(255,127,0),
@@ -30,7 +30,7 @@ class Config {
             grid = Pair(grid.first, value)
         }
 
-    var domain = Domain(-3.0, 3.0, -3.0, 3.0)
+    var domain = Domain(-1.0, 1.0, -1.0, 1.0)
 
     @Throws(IOException::class)
     fun readConfigFromFile(input: InputStream) {
