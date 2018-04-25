@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Separator?>
+<BorderPane fx:id="mainPane" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            prefHeight="600.0" prefWidth="800.0">
+    <top>
+        <ToolBar fx:id="toolbar">
+            <Button fx:id="openConfig" text="Open" />
+            <Button fx:id="saveConfig" text="Save" />
+            <Separator/>
+            <Button fx:id="addSpline" text="Add"/>
+            <Button fx:id="editSpline" text="Edit"/>
+            <Button fx:id="resetAngles" text="Reset" />
+        </ToolBar>
+    </top>
+    <center>
+        <Pane fx:id="canvasContainer">
+            <StackPane fx:id="holder">
+                <Canvas fx:id="revolutionCanvas" height="600.0" width="800.0"/>
+            </StackPane>
+        </Pane>
+    </center>
+</BorderPane>
