@@ -26,6 +26,7 @@ import wireframe.config.GeneralConfig;
 
 public class Wireframe extends Application implements RevolutionBodyChangedListener {
     private static final int FAR_Z = 1000;
+    private static final String PATH = "FIT_15201_Sogreshilin_Wireframe_Data/";
     @FXML private BorderPane mainPane;
     @FXML private StackPane holder;
     @FXML private Canvas revolutionCanvas;
@@ -61,12 +62,12 @@ public class Wireframe extends Application implements RevolutionBodyChangedListe
         FXMLLoader loader = new FXMLLoader();
         loader.setController(this);
         mainPane = loader.load(getClass().getResource("Wireframe.fxml").openStream());
-        fileChooser.setInitialDirectory(new File("data"));
+        fileChooser.setInitialDirectory(new File(PATH));
         tryLoadConfigOrUseDefault();
     }
 
     private void tryLoadConfigOrUseDefault() {
-        File file = new File("data/Config.txt");
+        File file = new File(PATH + "Config.txt");
         try {
             ConfigDeserializer serializer = new ConfigDeserializer();
             setConfig(serializer.deserialize(new FileInputStream(file)));
@@ -190,7 +191,8 @@ public class Wireframe extends Application implements RevolutionBodyChangedListe
     private void drawSegments(ArrayList<Segment> segments) {
         double dx = revolutionCanvas.getWidth() / 2;
         double dy = revolutionCanvas.getHeight() / 2;
-        segments = Renderer.operate(Renderer.rotationMatrix(config.getAngles())
+        segments = Renderer.operate((Renderer.shiftMatrix(Renderer.cameraPoint))
+                        .multiply(Renderer.rotationMatrix(config.getAngles()))
                         .multiply(Renderer.shiftMatrix(MatrixUtils.createRealVector(new double[] {
                                 -(box.xMax + box.xMin) / 2,
                                 -(box.yMax + box.yMin) / 2,
