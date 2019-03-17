@@ -1,6 +1,7 @@
 package ru.nsu.fit.g15201.sogreshilin.controller;
 
 
+import java.io.File;
 import javax.swing.*;
 import java.awt.*;
 import java.security.InvalidParameterException;
@@ -10,7 +11,7 @@ import ru.nsu.fit.g15201.sogreshilin.view.toolbar.MenuAction;
 public class MainFrame extends JFrame {
     private final JMenuBar menuBar;
     private final JToolBar toolBar;
-    private static final String RESOURCES_DIR = "../../../../../../";
+    private static final String RESOURCES_DIR = "../../../../../../resources/";
 
     private MainFrame() {
         System.setProperty("apple.laf.useScreenMenuBar", "true");
@@ -59,7 +60,6 @@ public class MainFrame extends JFrame {
 
     public void setMenuItemEnabled(String title, boolean b) {
         MenuElement element = getMenuElement(title);
-        System.out.println(element);
         if (element != null) {
             element.getComponent().setEnabled(b);
         }

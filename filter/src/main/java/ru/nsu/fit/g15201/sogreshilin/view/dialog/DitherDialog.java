@@ -62,7 +62,7 @@ public class DitherDialog extends JDialog {
 
     private void setObservers() {
         LabeledTextField.ValueChangedObserver listener =
-                e -> onPaletteChanged(redLevels.getValue(),
+                () -> onPaletteChanged(redLevels.getValue(),
                         greenLevels.getValue(),
                         blueLevels.getValue());
 

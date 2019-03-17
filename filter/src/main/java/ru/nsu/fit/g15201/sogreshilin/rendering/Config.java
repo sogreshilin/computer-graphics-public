@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Config {
@@ -70,7 +71,7 @@ public class Config {
             double y = Double.parseDouble(coordinateAndCharge[1]);
             double z = Double.parseDouble(coordinateAndCharge[2]);
             double value = Double.parseDouble(coordinateAndCharge[3]);
-            for (double coordinate: List.of(x, y, z)) {
+            for (double coordinate: Arrays.asList(x, y, z)) {
                 if (coordinate < 0 || coordinate > 1) {
                     throw new IOException("Invalid coordinate value. " +
                             "Has to be floating point between 0..1");
@@ -95,7 +96,7 @@ public class Config {
             int red = Integer.parseInt(emissionCoordinateAndColor[1]);
             int green = Integer.parseInt(emissionCoordinateAndColor[2]);
             int blue = Integer.parseInt(emissionCoordinateAndColor[3]);
-            for (int color: List.of(red, green, blue)) {
+            for (int color: Arrays.asList(red, green, blue)) {
                 if (color < 0 || color > 255) {
                     throw new IOException("Invalid color value. " +
                             "Has to be integer between 0..255");

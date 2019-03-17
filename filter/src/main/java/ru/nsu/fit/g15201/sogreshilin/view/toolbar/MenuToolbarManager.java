@@ -55,6 +55,7 @@ public class MenuToolbarManager {
             menuItems.put("Help/About", controller.addMenuItem("Help/About", "Shows copyright information", KeyEvent.VK_A, "about.png", controller::onAbout));
 
         } catch(Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

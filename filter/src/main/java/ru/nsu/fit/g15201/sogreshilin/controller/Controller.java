@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,7 +33,7 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
     private static final int HEIGHT = 600;
 
     private static final String TITLE = "Filters";
-    private static final java.util.List<String> EXTENSIONS = List.of("bmp", "png");
+    private static final java.util.List<String> EXTENSIONS = Arrays.asList("bmp", "png");
     private static final String DEFAULT_EXTENSION = "png";
     private static final String ABOUT = TITLE + ", version 1.0\n" +
             "Copyright 2018 Sogreshilin Alexander, FIT-15201";
@@ -179,7 +181,7 @@ public class Controller extends MainFrame implements FilterAppliedObserver {
     }
 
     public void onConfigOpen() {
-        File file = FileUtils.getOpenFileName(this, List.of("txt"), "Config");
+        File file = FileUtils.getOpenFileName(this, Collections.singletonList("txt"), "Config");
         if (file == null) {
             return;
         }
