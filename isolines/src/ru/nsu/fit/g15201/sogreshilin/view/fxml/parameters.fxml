@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="ru.nsu.fit.g15201.sogreshilin.view.ParametersController">
+    <padding><Insets top="25" right="25" bottom="25" left="25"/></padding>
+    <center>
+        <GridPane alignment="center" hgap="10" vgap="10">
+
+            <Label text="%x_domain" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                <padding><Insets right="10"/></padding>
+            </Label>
+            <TextField fx:id="xLow" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <Label text="-" GridPane.rowIndex="0" GridPane.columnIndex="2">
+                <padding><Insets right="10" left="10"/></padding>
+            </Label>
+            <TextField fx:id="xHigh" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
+
+
+            <Label text="%y_domain" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                <padding><Insets right="10"/></padding>
+            </Label>
+            <TextField fx:id="yLow" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <Label text="-" GridPane.rowIndex="1" GridPane.columnIndex="2">
+                <padding><Insets right="10" left="10"/></padding>
+            </Label>
+            <TextField fx:id="yHigh" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+
+
+            <Label text="%grid_size" GridPane.rowIndex="2" GridPane.columnIndex="0">
+                <padding><Insets right="10"/></padding>
+            </Label>
+            <TextField fx:id="rowsCount" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            <Label text="-" GridPane.rowIndex="2" GridPane.columnIndex="2">
+                <padding><Insets right="10" left="10"/></padding>
+            </Label>
+            <TextField fx:id="columnsCount" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+
+        </GridPane>
+    </center>
+
+    <bottom>
+        <GridPane alignment="center" hgap="10" vgap="10">
+            <padding><Insets top="25"/></padding>
+            <Button text="%cancel" GridPane.columnIndex="0" onAction="#onCancel"/>
+            <Button text="%ok" GridPane.columnIndex="1" onAction="#onOk"/>
+
+        </GridPane>
+    </bottom>
+
+</BorderPane>
