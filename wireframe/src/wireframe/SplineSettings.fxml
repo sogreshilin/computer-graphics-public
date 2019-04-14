@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Tab?>
+<?import component.SliderWithTextField?>
+<?import component.DomainFields?>
+<?import javafx.scene.control.CheckBox?>
+<BorderPane fx:id="mainPane"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            prefHeight="520.0" prefWidth="500.0">
+    <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+    <top>
+        <Pane fx:id="canvasContainer">
+            <Canvas fx:id="axesCanvas" height="290.0" width="490.0"/>
+            <Canvas fx:id="pointsCanvas" height="290.0" width="490.0" />
+            <Canvas fx:id="splineCanvas" height="290.0" width="490.0" />
+            <Canvas fx:id="serifsCanvas" height="290.0" width="490.0" />
+        </Pane>
+    </top>
+
+    <center>
+        <TabPane tabClosingPolicy="UNAVAILABLE" >
+            <Tab text="Spline">
+                <GridPane hgap="5" vgap="5" alignment="center">
+                    <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+                    <Label GridPane.rowIndex="0" GridPane.columnIndex="0" text="U grid count"/>
+                    <SliderWithTextField fx:id="uGridCount" GridPane.rowIndex="0" GridPane.columnIndex="1" min="1" max="100"/>
+
+                    <Label GridPane.rowIndex="1" GridPane.columnIndex="0" text="V grid count"/>
+                    <SliderWithTextField fx:id="vGridCount" GridPane.rowIndex="1" GridPane.columnIndex="1" min="1" max="100"/>
+
+                    <Label GridPane.rowIndex="2" GridPane.columnIndex="0" text="K parameter"/>
+                    <SliderWithTextField fx:id="kParameter" GridPane.rowIndex="2" GridPane.columnIndex="1" min="1" max="10"/>
+
+                    <Label GridPane.rowIndex="3" GridPane.columnIndex="0" text="Spline color"/>
+                    <ColorPicker fx:id="colorPicker" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                </GridPane>
+            </Tab>
+
+            <Tab text="Domain">
+                <GridPane hgap="5" vgap="5" alignment="center">
+                    <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+                    <Label text="Domain U" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <DomainFields fx:id="domainU" min="0" max="1" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <Label text="Domain V" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <DomainFields fx:id="domainV" min="0" max="6.283185307179586" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                </GridPane>
+            </Tab>
+
+            <Tab text="Revolution">
+                <GridPane hgap="5" vgap="5" alignment="center">
+                    <Label text="Center" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                    <Label text="x" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <Label text="y" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <Label text="z" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                    <SliderWithTextField fx:id="xCenter" GridPane.rowIndex="1" GridPane.columnIndex="1" min="-50" max="50" />
+                    <SliderWithTextField fx:id="yCenter" GridPane.rowIndex="2" GridPane.columnIndex="1" min="-50" max="50" />
+                    <SliderWithTextField fx:id="zCenter" GridPane.rowIndex="3" GridPane.columnIndex="1" min="-50" max="50" />
+
+                    <Label text="Rotation" GridPane.rowIndex="0" GridPane.columnIndex="2" GridPane.columnSpan="2"/>
+                    <Label text="x" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+                    <Label text="y" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+                    <Label text="z" GridPane.rowIndex="3" GridPane.columnIndex="2"/>
+                    <SliderWithTextField fx:id="xAngle" GridPane.rowIndex="1" GridPane.columnIndex="3" min="-180" max="180" />
+                    <SliderWithTextField fx:id="yAngle" GridPane.rowIndex="2" GridPane.columnIndex="3" min="-180" max="180" />
+                    <SliderWithTextField fx:id="zAngle" GridPane.rowIndex="3" GridPane.columnIndex="3" min="-180" max="180" />
+                    <CheckBox fx:id="showAxesCheckBox" text="Show axes" selected="True" GridPane.rowIndex="4" GridPane.columnIndex="0" GridPane.columnSpan="4"/>
+                </GridPane>
+            </Tab>
+        </TabPane>
+    </center>
+
+    <bottom>
+        <GridPane alignment="center" hgap="5" vgap="5">
+            <Button id="okButton" fx:id="okButton" text="OK" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="100"/>
+            <Button fx:id="previousBodyButton" text="Previous" GridPane.rowIndex="0" GridPane.columnIndex="2" prefWidth="100"/>
+            <Button fx:id="nextBodyButton" text="Next" GridPane.rowIndex="0" GridPane.columnIndex="3" prefWidth="100"/>
+            <Button fx:id="removeBodyButton" text="Remove" GridPane.rowIndex="0" GridPane.columnIndex="4" prefWidth="100"/>
+
+        </GridPane>
+    </bottom>
+</BorderPane>

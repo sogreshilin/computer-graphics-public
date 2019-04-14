@@ -1,0 +1,21 @@
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# Package Files
+*.jar
+
+# OS X Files
+.DS_Store
+
+# Idea Files
+*.idea
+*.iml
+*target
+*out
+
+# Data files
+FIT_15201_Sogreshilin_Filter_Data/*
+!FIT_15201_Sogreshilin_Filter_Data/Japan.png
